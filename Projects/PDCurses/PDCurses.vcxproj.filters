@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\win32\pdcclip.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\win32\pdcdisp.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\win32\pdcgetsc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\win32\pdckbd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\win32\pdcprint.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\win32\pdcscrn.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\win32\pdcsetsc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\addch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\addchstr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\addstr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\attr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\beep.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\bkgd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\border.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\clear.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\color.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\delch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\deleteln.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\getch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\getstr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\getyx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\inch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\inchstr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\initscr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\inopts.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\insch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\insstr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\instr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\kernel.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\mouse.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\move.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\outopts.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\overlay.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\pad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\pdcdebug.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\pdcutil.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\pdcwin.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\printw.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\refresh.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\scanw.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\scroll.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\slk.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\termattr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\terminfo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\touch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\window.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

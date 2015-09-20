@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{12AFED28-4292-42A8-9E4C-C0A052B20761}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>PDCurses</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(SolutionDir)Projects\ThirdParty;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(SolutionDir)Projects\ThirdParty;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)Projects\ThirdParty;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)Projects\ThirdParty;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>PDC_STATIC_BUILD;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>PDC_STATIC_BUILD;_DEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>PDC_STATIC_BUILD;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>PDC_STATIC_BUILD;NDEBUG;_LIB;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\addch.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\addchstr.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\addstr.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\attr.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\beep.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\bkgd.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\border.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\clear.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\color.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\delch.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\deleteln.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\getch.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\getstr.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\getyx.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\inch.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\inchstr.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\initscr.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\inopts.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\insch.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\insstr.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\instr.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\kernel.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\mouse.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\move.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\outopts.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\overlay.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\pad.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\pdcdebug.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\pdcutil.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\pdcwin.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\printw.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\refresh.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\scanw.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\scroll.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\slk.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\termattr.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\terminfo.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\touch.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\util.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\pdcurses\window.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\win32\pdcclip.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\win32\pdcdisp.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\win32\pdcgetsc.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\win32\pdckbd.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\win32\pdcprint.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\win32\pdcscrn.c" />
+    <ClCompile Include="..\ThirdParty\pdcurses\2.6\PDCurses-2.6-src\win32\pdcsetsc.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
