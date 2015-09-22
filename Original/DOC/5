@@ -1,0 +1,95 @@
+.SH Overview of the Game Driver.
+.LP
+If all you want to do is play with the supplied game and never get
+your paws dirty now is a good time to stop. I'm going to assume
+some basic understanding of programming and related ideas. Since this
+manual is so dire that you'll probably need to explore the source code
+to figure out what on earth is really going on I don't think that is
+too unfair.
+.LP
+The original goal of AberMUD5 was that everything in the database would
+be a 'thing' and have the same basic behaviour. In actual fact there are
+several differently behaving sets of things within the AberMUD system.
+.LP
+Firstly there are words. A word is a set of letters, a value and a type.
+The sole purpose of the value is to identify synonyms. Any words with
+the same type and value are synonyms. 
+The game parser understands quite a wide variety of words, although
+only within a limited command oriented structure. The syntax is best
+described as
+.LP
+sentence :== verb {item} {preposition} {item} | verb {text}
+.br
+		 | verb {item} {preposition} {text}
+.br
+item:== {ordinate} itemphrase
+.br
+itemphrase:== adjective {itemphrase} | noun
+.SP 1
+.LP
+The different word types are:
+.SP 1
+.IP verb: 15
+Normal command sentences begin with a verb. The parser doesn't
+understand the English structure 'use item to verb target'. 
+Verb numbers 0-12 are reserved for directions, and 13-199 for
+game editing commands.
+.IP adjective: 15
+An adjective qualifies a noun to define exactly which item
+is being referred to. An item can only have one adjective
+associated with it in the current system. The game allows
+adjectives and nouns with the same text, and correctly
+interprets them.
+.IP noun: 15
+Each item within the game has a noun it is associated with. 
+Nouns may be further qualified by adjectives.
+.IP ordinate: 15
+An ordinate is used as the final level of qualification of
+a specific item. An ordinate secifies which of the matching
+set of items is to be used by number - eg fourth blue sack.
+.IP preposition: 15
+As far as the game system is concered a preposition is
+any linking word that seperates two items within the
+command given. For example 'to' 'in' and 'from'.
+.IP pronoun: 15
+Words like 'him' and 'her'. The game system tracks and manages
+the basic English pronouns :- him, her, it, them, there, me.
+When processing the parser substitutes back in the appropriate
+item for the words.
+.LP
+Although these are a tiny subset of the language structure and the parser
+is easily fooled into interpreting things that would never be said in real
+English, it is more than adequate for the job, and more powerful than most
+other game system parsers.
+.LP
+The game has some limits however. Firstly it is unable to handle the structure
+use <item> to <verb> <target>. This can be handled easily within the database
+as we shall see later. Its two much more real limits are the inability to
+handle <verb> <"string"> <preposition> <item> - for example say "hello" to 
+eric, and the ability to handle sentences of the form <verb> <nounitem1> 
+<item2>, where the noun of item1 is also possibly an adjective. When a 
+preposition is used the parser is cable of handling the second example. 
+The first case is a deliberate choice. To process say "hello" to eric, you would
+have to include the quotes. It was felt the ability to avoid quotes outweighed
+the advantages of handling this sentence form.
+.LP
+The second type of thing within the database we have almost met already. When
+the parser resolves an adjective noun to give something which exists in the 
+game world, it is resolving it to an item, the next in our three types.
+.LP
+An item represents some physical or at least metaphysical entity within the game
+world. Unlike many game systems it makes no seperation between the different
+basic types , instead each of these types can be attached to the basic item. By
+working in this fashion game designers get maximum flexibility and ease of use,
+since they never have to worry 'is this a player or a room', and in addition
+an item can be two or more of the types. We shall look in detail at items in the
+next chapter.
+.LP
+The final type has to do with the result of someone typing in a command. Something
+has to explain what the game does when this command is entered This is the role
+of the database tables. These are sections of game code describing conditions
+and testing and changing the status of items. It is these which allow the author
+to control and customise his world.
+.LP
+A couple of minor types also float around the game system. The only one of note
+is the BSX picture, which is a picture for Bram Stolks BSX graphics system.

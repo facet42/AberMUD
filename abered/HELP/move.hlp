@@ -1,0 +1,24 @@
+    Moving is part of the editor, you can walk around through the rooms etc
+looking to see how things join together. It's important to note however,
+that doors will not stop you moving, open or otherwise. This was meant to
+look like the game, but isn't one, so doors being open closed, is trivial
+
+    Exits command can be used to list all the exits in the current location.
+If you however type exit n room5, it will create that exit for you. Exits
+marked by * are to locations the editor can't actually find. To make an exit
+through a door, you would type exit w ^door. The ^ tells the editor that 
+it is a door type exit, and is also used to mark such exits. Specials are not
+handled, for there is no way for the editor to know where they would go.
+Destroying an exit can be done the same way you create one. When you create
+an exit, any previous exit is delete first, thus exit n  would delte the 
+exit north, but no new one would get created.
+
+    Goto allows you to move into any room. You may goto <room>, goto <mobile>
+or goto <object>. If the object is not in a room, but in a bag, goto will fail
+
+    Trans or summon will allow you to move other things around. Summoning
+mobiles will place them in the room with you, while summoning an object places
+it into your hands. eg ltype = UNKNOWN. They will try to match as best they
+can, but should an object and mobile have same names, you may specify you want
+for example the object by saying trans obj <name>
+

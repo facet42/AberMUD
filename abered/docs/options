@@ -1,0 +1,27 @@
+_NO_WFLAGS
+	This oprion compiles out the wflag code, thus saves memory for
+	the compilers that produce limited memory versions.
+	Wflags may still be read in, but they will be ignored and not saved
+
+DOS_MACHINE
+	If you are compiling on an IBM machine running any version of DOS
+	then you need to define this.
+
+EQBUG
+	Define this if your compiler does not have libraries with the
+	functions strncasecmp() and strcasecmp()
+
+ANSI_C
+	This ensures that ansi C style prototypes are used rather than the
+	default OLD C type.  Few other things change as well.
+
+PCC_286
+	The pcc compiler is not capable of certain things. In particular this
+	will disable the ability to save a comment at the start of the zone.
+
+IBM_MLJ_EDIT
+	Compile the simple editor and use it for getting long text decriptions
+	from the user.  NOTE that this uses commands found in the IBM GNU
+	C Compiler (djgpp) and these may or may not be available or do the
+	same things with other compilers.
+

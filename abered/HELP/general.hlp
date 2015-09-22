@@ -1,0 +1,52 @@
+
+    The editor is made to look like the game, as it is meant to be used by 
+those most familar with playing the game. It does not have a _REAL_ editor
+as such, most of the text is just read, and mistakes will require complete
+retype. Though using an editor like VI may be easier to touch up spelling
+and other little errors. This program is just to help get the zone files
+in the format required by the mud, and maybe save gods a little work, fixing
+some mistakes or just making the zone neat. 
+    It may also be useful to allow you to walk around the place, and see what
+things would look like in the game. Many restrictions are not enforced of 
+course, simply because there is no need. Things like doors being closed or
+not, serves little purpose to make the editor open them. Just as easy to
+assume they did.
+    One of the reasons that no editor was added initially at least, is
+that this was done on a small IBM, with no hard drive and a PD compiler,
+and the program has been restricted to 64K.
+
+    The editor is run abered <zonename> Don't put the .zon exstention
+The default name is zone, and the file is read in immediately. It should be
+able to read any zone file, but you need to remove C style comments, as it
+can not handle these. Ones at the beginning of the file, will most likely
+get ignored, but others in the middle will confuse the editor. It can not
+remove them as the mud does.
+
+The configuration file, abered.cfg
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The format is simple, things may be boolean type flags who's value is a simple
+truth value (TRUE or FALSE) or they may be lists of things, such as oflags,
+which is a list of what oflags the mud you are making a zone for has.
+
+Boolean Variables
+
+BRIEF   : This is exactly like the mud brief. Do you want to see
+          full room description everytime you enter.
+COUNTER : A few dirt muds have an extra object variable, besides armor and
+          damage, for use as a counter. Others may just use armor or damage
+
+List type variables
+
+OFLAGS { list of flags } All the flags are listed like this. Object flags
+LFLAGS { Location flags }
+MFLAGS { Mobile flags }
+PFLAGS { Player/Priv flags }
+SFLAGS { Things like female }
+
+These lists may extent over multiple lines, but have upper limits on the 
+number of flags.
+
+
+
+

@@ -1,0 +1,11 @@
+Usage: clone <LOC|OBJ|MOB> <existing> <new name>
+
+Clone allows you to duplicate objects, locations and mobiles almost precisely.
+Certain things, namely those things that must be unique are not duplicated.
+Everything else about the item will be copied, but may be latter modified
+as you desire.
+
+When cloning items, the second name must be unique, because this is not
+the name that players will see inside the MUD, but the external name of
+the item.  (Cloned objects are assigned next available number)
+

@@ -1,0 +1,120 @@
+.SH Rooms
+.LP
+Any item within the game can be made into a room. A room adds a 
+set of rules and properties to the basic item structure. To
+make something into a room you do 'beroom <itemname>'. To get
+rid of its room properties you do 'unroom <itemname>'. To view
+the values type 'showroom <itemname>'.
+.LP
+A room has the following properties
+.LP
+.IP "Short Description:" 25
+A one line room description used for
+brief room descriptions. This is set by doing
+.I setshort <item> <text>.
+.IP "Long Description:" 25
+A long description text. This text
+may be merged with other texts in ways
+controlled by the flags. This is set by
+using
+.I setlong <item> <text>
+. If text begins with a * it is assumed to be a file
+you wish to read in. If text is blank the
+current text is provided for editing. To
+blank a description use */dev/null. (Yes I
+know its a hack).
+.IP Flags: 25
+A set of optional behaviour modifiers
+for the room. These are set with
+.I setrflag <room> <flags>
+. To clear a flag use -<flagname>
+.IP Picture: 25
+Do not use - an obsolete field. More on
+graphics later in the BSX section.
+.LP
+The flags are:
+.LP
+.IP Dark: 16
+Without a light source nothing can be seen.
+.IP Outside: 16
+Subject to weather. This is now provided only for use
+by the database. All builtin weather code is removed.
+.IP Death: 16
+The room causes death on entry. This is kicking off and
+not losing any points. Its meant for cases where people
+go stupid directions (like over a waterfall), and you
+just want to display some text and finish. All the users
+belongings also conveniently end up lost in the death
+flagged room.
+.IP Merge: 16
+The room description will be merged with the description
+of the contents of this room if its join flag is set.
+.IP Join: 16
+See above. An example probably makes this clearer - if 
+you had a boat you could set it to merge and its
+description to 'You are in a boat.' If you set the join
+flag on the locations the boat floats around then you 
+will see the rooms out of the boat.
+.IP DropEMsg: 16
+As we will see shortly it is possible to have a message
+appear as you move from location to location. If this
+flag is set and such a message is printed the normal
+description is not displayed.
+.LP
+Being a room gives other basic properties. A room will be described,
+complete with its contents all nicely formatted up, using simple
+database facilities. A room has no size - it is assumed to be of
+infinite capacity. If you want a room to be size limited you need
+to make it a container - as we shall see later.
+.LP
+The room flags can be listed with listrflags, and named with 
+.I namerflag <number> <name>
+. At the moment the other room flags are free but they
+may be used by the system in later releases. Any user added room flags
+should start at the last one and work backwards.
+.SP 1
+.SH Exits
+.LP
+While exits are associated with rooms they can be attached to anything.
+There are three types of exit within the AberMUD5 system. The first is
+the simple exit. Simple exits are created by doing 
+.I newexit from_item direction to_item
+.
+.br
+e.g.
+.br
+newexit Big Hall east Side Passage
+.LP
+A simple exit can be made to an object or to a room. In the normal form
+the exit is to a room. In these cases anything moving in that direction
+travels from the one room to the other. If the exit is to an object, the
+object is assumed to be a door. In this case movement through the exit
+is only possible if the object is in state 0 (open). Anything moving 
+through such an exit is moved to the item containing the door. Such
+exits are removed by doing
+.I delexit <fromrom> <direction>.
+All other types of exit are removed in this fashion too.
+.LP
+A message exit displays some text as the player travels in that
+direction. A typical use might be a chute which displays
+'You hurtle wildly down the chute and come crashing to a halt in a
+cloud of thick dust.'. For such a chute you might not want the room
+description to appear. In this case you can set the 'dropemsg' flag
+for the room. To create such an exit do 
+.br
+.I msgexit <from_item> <direction> <to_item> <text...........>
+.LP
+A currently existing text can be edited by doing
+.I msgexit <from_item> <direction> 
+.LP
+Finally a conditional exit allows you to attach a table of database. 
+These are created with 
+.I condexit <from_item> <direction> <to_item> <table_name>
+.LP
+We will deal with tables much much later on. The condexit is only
+included here for completeness.
+.LP
+.I Note:
+It is possible to have multiple exit types in the same direction
+from the same location. What happens if you do this is undefined - so
+behave and don't do it.

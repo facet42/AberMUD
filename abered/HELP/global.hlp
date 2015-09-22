@@ -1,0 +1,32 @@
+  The global command shows a list of what your configuration is, your current
+location, and some other details. Many of these can be changed by using the
+global command also. eg global brief false, will make brief mode false.
+  global save will save the comfiguration into abered.cfg. This will allow
+you to keep the same configuration the next time that the program is run.
+
+Configuration file:
+
+BRIEF	: start in brief mode or not.
+COLOR	: No effect
+COUNTER : Tells the editor the dirt mud has ocounter on it's objects
+WFLAGS  : Does the mud have Wflags. (Wear flags)
+
+Though some things do not exist in every mud, eg counters, if you do not want
+them, and the source zone file has them, load it anyway, it will set them, but
+will not save them unless you define counter to be true.
+
+Oflags, Lflags, Pflags, Mflags, Sflags and possibly others, like Spells may
+exist on some muds, but exactly what flags are available, will change, but
+the editor reads what flags there are from abered.cfg. They can be added while
+editing, or removed with define and undefine commands.
+DEFINE ?flags flag, eg define oflags Alcohol, the same applies to undefine.
+
+Entries on the config file look just like they would for an object or mobile 
+etc. Oflags {Weapon Armor Food ....} There is a maximum number of these, shown
+in globals command.
+
+Flags such as Spells may not exist in most dirt muds, and if no spells are 
+defined, the editor will assume that it should not save a spells entry for
+mobiles in this case.
+
+

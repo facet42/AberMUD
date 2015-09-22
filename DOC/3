@@ -1,0 +1,22 @@
+.SH Features
+.IP o 5
+TCP/IP networking
+.IP o 5
+Intelligent client, with remote editing facilities
+.IP o 5
+BSX graphics
+.IP o 5
+Relatively low disk/memory requirements
+(1.5Mb RAM, 2Mb disk for a 600 room game)
+.IP o 5
+Easy to program game language
+.IP o 5
+Inheritance of object behaviour
+.IP o 5
+MudWHO support
+.IP o 5
+Optional registration based game system
+
+
+
+

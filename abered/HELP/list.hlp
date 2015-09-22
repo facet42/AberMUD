@@ -1,0 +1,12 @@
+    List will show you a list of all the mobiles, objects or locations in 
+the game. It takes one of those 3 as an argument, but will default to 
+locations. Abbreviations can be used, eg list l , list o and list m work. 
+    List can also list the contents of the flag tables. This means it will
+show you what Lflags, Oflags, Pflags, Sflags, Wflags and Mflags the editor 
+knows about, by specifying one of the above flags as an argument to list.
+
+Possible Arguments to List:
+
+Locations Objects Mobiles Oflags Pflags Sflags Lflags Mflags Wflags
+
+Some may be undefined depending on your config file.

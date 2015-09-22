@@ -1,0 +1,7 @@
+	Saving what you have edited is done here. If just the command save
+(or dump) is given, the the zone will be saved to the input file, overwriting
+the old zone. NOTE No backup is made. If there was no input file, the file
+will be saved to the default name. ZONE.ZON probably.
+	Save can be given an input, in which case it will save in a file 
+you specify on the command line. Not the editor can only load files that end
+in .zon, so you should specify this in the file name. eg save myzone.zon

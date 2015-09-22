@@ -1,0 +1,61 @@
+
+ FILES
+~~~~~~~
+- *.cfg files are config files for various muds. abered.cfg is the one the 
+  editor uses.  To create your own, copy all the flag names into the 
+  appropriate place.  Look at one as an example.  Note you can define new flags
+  while editing, eg define oflag book and save new config file with global save
+  There is a maximum number of flags though.
+
+- *.c The c source files
+
+- types.h has all type declarations in it
+- verbs.h contains list of valid commands
+- extern.h global variables
+- macros.h ....
+
+- HELP directory contains all the help files for reading in the editor
+
+- GNU dir contains some gnu stuff including a copy of go32.exe
+  Note the information about binaries compiled with gcc.
+
+To recompile you should need only to type make followed by the the version
+to build. (make by itself to get a list)
+To run the program, just type abered zonename. You do NOT type the .zone
+extension.  
+
+ Credits
+~~~~~~~~~
+  Author:    James Willie (Ithor)
+  
+  Debugging: Mary Jones(Larken) helped greatly with debugging this code
+
+ Copyright
+~~~~~~~~~~~
+You may redistribute this code provided it is left as is.  You must 
+include all files, help, docs and src included and it must NOT be
+modified.
+
+I request if you get a copy from anyone other than me, that you send me
+an email at jwillie@werple.apana.org.au telling me you have it.  If you 
+have any changes that you think should be included, feel free to send them
+to me.
+
+There is no warranty with this program, nor will I take any resposibility
+for anything this program may do. 
+
+  Any bugs found, I would like to know about them. The more infomation the 
+better.  I would prefer to add all fixes myself, though suggested code is
+welcome.  This also includes adding things so it can handle additions to your
+mud.  If you have any troubles I will in general be quite happy to help you
+sort it out.
+
+ Address
+~~~~~~~~~
+James Willie :- jwillie@acca.nmsu.edu (You may give people my email :)
+		jwillie@werple.apana.org.au
+
+                James Willie
+                11 Rautman Crescent 
+                Sunshine, Melbourne, 3020
+                AUSTRALIA

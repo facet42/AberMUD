@@ -1,0 +1,21 @@
+
+AberMUD 5.20.0 / The New World                          ArchWizard Commands
+--*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*-- 
+Valid ArchWizard Commands:
+    ARCHLOCK / ARCHUNLK    Prevent / Allow non-archwizard logins
+    MSETIN/OUT/HERE        Set In/Out/Here messages for players/mobiles
+    RAW <text>             Send a message as "A voice whispers..."
+    RTP <player> <text>    Send an exact string to a user
+    ARCH <msg>             Send a message to other Archwizards
+    SQUEEK <player>        Squeek someone!
+    GOTO HOME              Immediate Transport to the Creator's Grove
+    BYEBYE <player>        Kick a player off the game
+    DUST <target>          Kick something off the game  (Global search)
+    BENOT <target>         Destroy an object
+    BANG                   Make some thunder
+    ENABLE/DISABLE BEG     Allow/Refuse Begging
+    ALIAS <tgt>/UNALIAS    Temporarily take over a mobile
+    BECOME <target>        Permanent transfer
+    XEROX <target>         Duplicate an item
+    ANIMATE <mobile>       Temporarily animate a mobile
+

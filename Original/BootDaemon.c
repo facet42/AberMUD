@@ -12,10 +12,6 @@
  *	Daemon Initialise
  */
 
-#ifdef _WIN32
-#include <Windows.h>
-#endif
-
 #include <signal.h>
 #include "System.h"
 
@@ -90,16 +86,12 @@ void IPCMain(void)
 		Scheduler();
 		SendUser(-2, "");
 		ProcessPackets();	/* Alarm interrupted blocked */
-		FixLineFaults();	/* Kick off everyone timer faulted */
+		FixLineFaults();	/* Kick oiff everyone timer faulted */
 /*
  *	Finally if we have been replaced by newer versions, and no other
  *	person is on the game, then die peacefully
  */
 		if(SupercedeFlag&&(CountUsers()==0))
 			exit(0);	/* Die peacefully */
-
-#ifdef _WIN32
-		Sleep(0);
-#endif
 	}
 }

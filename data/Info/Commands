@@ -1,0 +1,15 @@
+
+AberMUD 5.20.0 / The New World                        Valid Player Commands
+--*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*-- 
+Moving:  North  East   South  West     | Objects:  Get    Drop   Wear   Remove
+         Up     Down   In     Out      |           Open   Close  Lock   Unlock
+         Climb  Enter  Swim   Exits    |           Read   Throw  Light  Unlight
+         Follow        Stop Following  |           Push   Pull   Turn   Play
+--*--  --*--  --*--  --*--  --*--  --*-+           Eat    Drink  Steal  Empty
+System:  Inven  Save   Quit   Commands |  --*--  --*--  --*--  --*--  --*-- 
+         Help   Rtime  Look   Levels   | Talking:  Shout  Emote  Tell   Say 
+         Score  Info   Value  PW       |  --*--  --*--  --*--  --*--  --*-- 
+         Who    Date   Typo   Version  | Other commands should become evident
+         Bug    News                   | as you discover that you need them!!
+--*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*-- 
+

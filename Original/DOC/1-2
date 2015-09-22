@@ -1,0 +1,273 @@
+.SH Introduction
+.LP
+The AberMUD5 system has evolved over the last 4 and a half
+years from an experiment into editing in game to a full game
+writing system. Its origins lie in two places. Firstly because
+I was unhappy with the old AberMUD3 driver, the design of which
+was fundamentally flawed in that it was constrained to a design
+initially thought out to get around the limits of GCOS3/TSS on
+a Honeywell mainframe. AberMUD5 is a single server process
+rather than a set of co-operating user processes.
+.LP
+Leon Thrane had spent a lot of time developing the basics of 
+a multi user game system initially on the Amiga (CIA) and then 
+under Unix (LANCE). In many ways it was the ongoing MUD project
+and it should have been the game the AberMUD team produced. It
+got sidetracked because although crude and nasty AberMUD was
+there and worked, while LANCE like many carefully planned and
+designed projects was still being built. In essence it went the
+way many 'real' research projects go.
+.LP
+AberMUD steals its core concepts from LANCE. The idea of
+subtyping things like rooms is a LANCE concept, as are many of
+the properties such as soft and hard containers. The main things
+I left behind were the rules that LANCE enforced - that an 
+object could not be inside itself, that it could not be both
+a room and an object at the same time and similar structural
+constraints.
+.LP
+AberMUD5 started out on an Amiga, initially as a set of
+IPC routines and a basic core allowing creation and editing
+of objects, rooms and players. Once that core was solid the
+game driver language was added. The driver language takes 
+ideas from various sources. It uses a simple table driven
+approach for its basic structure, as this simplifies both
+parsing and interpretation of the game language. For speed
+and compactness the driver compiles the game language into
+a P code. Unlike Lp-MUD (which at this point I had never seen
+since I was away from the net for a year and a half) the P
+code can be decompiled back to the original source, so that
+the source need never be stored.
+.LP
+The first port of AberMUD5 was to SCO Xenix as part of a
+possible commercial sale that never occured. It took only one
+evening for Ronald Khoo, Eric(*) & me to get it working under Xenix
+although most of this had to do with Ronald's remarkable skill.
+.LP
+When I finally returned to university after a years absence
+I had three sets of AberMUD sources. The first of these was
+a fortunate backup taken before I spent a year working 
+commercially for Horrosoft, the second the version including
+code I had written at Horrorsoft, and the third a commercial
+and somewhat different variant with a graphical interface that
+was used for the Elvira game. I was able to produce a limited
+distribution set of the second version, and also used it to
+start AberMUD5 running on the university computer society system.
+The game gained a large number of features at this point, as
+well as becoming much more efficient. With 8 people on a 68010
+CPU and 1Mb process spaces you learn what efficient means...
+Until recently this version was the one distributed and was
+subject to a fairly annoying set of signed paper license rules.
+As of version 5.20 however the base set predates my work at
+Horrorsoft and all the other code was rewritten from a set
+of specifications of the 5.16 release. This has finally enabled
+me to release a much freer version of the game driver.
+.LP
+The current AberMUD5 (5.21.3) is now based totally on TCP/IP
+and the older support for named pipe communications and Amiga 
+message queues has been dropped. It runs as a single process 
+which for the AberMUD5 database, a fairly complex 600+ room game,
+is about 1.3Mb in size with everything except the user file 
+loaded into memory.
+.LP
+.nf 
+(*) Eric is Ronald's teddy bear
+.SH AberMUD: Mythology and History
+.LP
+There seem to be no end of strange claims occasionally
+appearing in rec.games.mud about AberMUD, that in general
+are far from accurate. Lets start at the beginning
+.IP o 5
+AberMUD is not the first MUD or anything of the sort. I
+spent a lot of time playing a game called 'Multi User
+Dungeon' or 'MUD'. It was written in 1979-1981 by
+Roy Trubshaw and Richard Bartle, and different versions
+of it contained many of the ideas that a lot of people
+think were first invented by things like TinyMUD. It 
+was also a game with no mindless violence. Every death
+was carefully plotted, every victim selected and kill
+planned. In fact being beaten to death was one of the
+easier things in MUD. It was no game for wimps either.
+Dying cost you all your points, and a typical player
+took a year to a year and half to learn the game well
+enough to make wizard.
+.IP o 5
+AberMUD wasn't even that original. The game system is
+heavily influenced by the style of MUD. The initial
+database for AberMUD1 was a strange and bizarre beast
+being a mishmash of in-jokes and odd scenes. It actually
+worked suprisingly well, and many a person died at the
+hands of a maniac wielding such items as a .44 beetroot.
+More of the history later
+.IP o 5
+Despite what many people seem to think AberMUD is named
+after the town where it was written. Most people know
+that much but they don't seem to know that
+.br
+a) It is spelt 'Aberystwyth' (which is Welsh for the
+mouth of the river Ystwyth).
+.br
+b) It is pronouced Aber (with a hard 'A' - like in axe)
+and doesn't sound like aayber.
+.IP o 5
+What made AberMUD a success wasn't any kind of brilliance,
+it was the fact that the games at the time were all written
+in bizzare languages: MUD in a mix of BCPL and DEC10 assembler,
+and VaxMUD in VMS fortran. MUD was certainly a much better
+system and game at the time. Mostly it was luck that a guy 
+called Vijay from the US asked for a copy, so we gave him one.
+Since then the world has not looked back.
+.IP o 5
+Although these days it is written in Swansea (though still
+run in Aberystwyth too), its still AberMUD because in Welsh
+Swansea is Abertawe (the mouth of the river Tawe). In English
+its derived from Svenns Ei (Ei being Island), after a viking
+pirate who used it as a base  - so there.
+.SP 2
+.LP
+A full history of AberMUD and its goings on almost requires a book
+to describe Aberystwyth, its computing people and indeed a cast
+who would be regarded as too unbelivable in a fictional account.
+.LP
+I think it's worth introducing a few main players of the cast
+as I try and outline the history of AberMUD.
+.LP
+The man upon whom we normally blame the entire thing is Robert Ash,
+the computer centre systems manager who ,when we asked how we would go
+about writing a multiuser game on the Honeywell, replied that it couldn't
+be done. To be fair he always maintains that he meant it couldn't be
+done in the spare time we had, and I guess he was right since I failed
+the physics accessory course at Aberystwyth. Anyway, as anyone who has
+ever kept a pet 'real programmer' will tell you, the last thing you
+tell a real programmer is that "it can't be done". So we did it.
+.LP
+Throughout the history of AberMUD at Aberystwyth Rob was a great
+help. There are very few system managers who not only didn't mind games
+on their system so long as it didn't stop real work, but who were 
+actually prepared to sit down with someone and explain the innards of
+turning screen paging off with a DRL (system call) for a game. 
+.LP   
+Having been told it wasn't possible the next cast member - Leon
+Thrane (pronounce that with a 'th' sound and he'll sulk)- got busy. Leon 
+had an Amiga 1000 and thus the capability to develop on a sensible machine
+of his own. He also knew C, while the rest of could muster Z80, 6502, a 
+little 68000, 8085 and BASIC between us, and from our previous escapade
+of writing a bulletin board had learned B (the predecessor to C) by
+examples. Leon got a few simple basics working, and we even had about 
+ten rooms before CIA kind of petered out. We ran into too many problems
+- lack of access to Leon's machine , which, since the alternative was
+an ACT Sirius running DOS1.? and Lattice C version 1.12,  was a major
+problem. Later on we also lost most access to Leon when he acquired a
+girlfriend.
+.LP
+Leon had also however figured out the basics of socket programming
+on the computer science vax machine. As this was vanilla 4.2BSD it
+also involved crashing the vax a few times in the process. 
+.LP
+We had already written a chat system for the Honeywell using
+shared files - the only IPC for GCOS3/TSS was in batch not timesharing!
+and I got bored. After an hour or two I had the ability to walk between
+channels of the chat system (which already had descriptions for 
+channels). By 6am that morning AberMUD was born. It took a few weeks 
+before it grew into anything serious but rapidly caught on. Within a
+couple of months it was out of control and had to be split from the
+bulletin board/chat system because it was too large.
+.LP
+This unfortunately messed up a lot of Leon's future work, because
+it diverted all the other work away from LANCE, his very carefully
+designed system, which had it been finished would have been one 
+amazing game.
+.LP
+As AberMUD progressed and grew two people contributed a lot of
+bits too it. Jim Finnis (White the 159IQ MegaCreator) contributed a 
+large collection of very very silly areas - Charlie & The Chocolate
+Factory, Milton Keynes, and above all a pair of extremely unpleasant
+mazes. He also added some pieces to the code, and invented the emote
+command. Jim is still around occasionally and before he complains
+I probably ought to point out that the 159IQ Megacreator was our title
+and part of a joke, rather than his, and that he in fact is a small
+hairy and fairly quiet person who can be bribed with good whiskey.
+Don't believe anything he says about me - it might be true.
+.LP
+After the first six rooms - including the infamous AberMUD1 warning
+notice 'Anyone going west from here will explode' (well everyone has
+to try it once don't they) - I asked a very loud 1st year by the name
+of Richard Acott aka 'the Moog' to design some rooms. He added Doiley
+Woods of all things, and after I added combat to the system everyone
+was busy chopping Evil Edna up. The Moog added several other areas to
+AberMUD1, although almost nothing of his survived into AberMUD2. He
+is also still very occasionally around, although sadly he has passed
+on into the real world, and is but a shadow of the Aberystwyth folklore
+he created. Several things in the older AberMUD's (that alas were 
+removed by the Americans) come from his exploits - the infamous non-stick 
+glass, and the saga of Veryodd's (ex) door spring to mind.
+.LP
+Eventually all our creation got too much for the poor Honeywell
+and AberMUD could no longer be linked (it gave up and the system
+informed us that the memory limit had been EXCEDEED (yes thats how
+it was spelt - I guess the designers hadn't tested it). Size on
+the Honeywell was a big problem. You only had 64K of 36bit words per
+process, and only 256K words in memory at most per copy of timesharing.
+Timesharing was a very priviliged batch job, and you had to run
+several of them on the machine because the address space was 18bit.
+A few special priviledged intersegment operations existed to get
+around the 256K word limit, but a job could only access one segment.
+.LP
+The problem was even worse than this because the Honeywell architecture
+only had base-limit pairs and no page mapping such as even the PDP11
+had. This meant that programs had to be entirely in memory and had to
+be contiguous. With a few copies of AberMUD running the game response
+time rapidly fell to about 30 seconds a move because of the amount
+of swapping involved, and the way the Honeywell penalized awkward
+large jobs in its scheduling.
+.LP
+Thus when we finally hit our 64Kword limit I decided to tidy up
+the code, make it more efficient and write a 'serious' database. The
+result of all of that became AberMUD2, and when we got access to some
+nice new sun 3/50 workstations and a new fast compsci machine I spent
+a week or two porting and then tidying the code for Unix. The Unix
+version was about ten times as fast and very messy. Mostly because
+I didn't know C well(only B), and because the B to C conversion was
+mostly done with vi macros. In fact AberMUD today uses '**' not '*'
+to terminate things like converse mode because I missed a change.
+(In B * is like \\ in C - thus ** means a single *).
+.LP
+By now we had JD helping with the programming and ideas, and
+he wrote several useful widgets for the Honeywell version, but wasn't
+able to do much for the Unix release because as a Physicist he had
+no access to the Unix machines. JD like most AberMUD writers is still
+on the net, currently as an unemployed Unix administrator. JD is also
+worth a lot of description, but he'd only act modest and hide if I did.
+.LP
+Once we moved to Unix things sort of took off. The code went to 
+various sites - the first being UCL physics sun network and became 
+quite popular there too. A version ran on a guest account at Southampton
+for a long period and was very popular (and extremely violent). Then I
+managed to fail my Physics accessory course and vanished for a year and
+a bit working for Horrorsoft on 'Personal Nightmare' and then 'Elvira',
+before finally returning to Swansea.
+.LP
+In the intervening period AberMUD had taken off, and various people
+had done unspeakable things to AberMUD (like Rich $alz ANSIfying it).
+I got back in time to watch the first days of TinyMUD unfold on alt.mud,
+and see the initial announcement for the firt test LpMUD. I'd also 
+written the initial Amiga version of AberMUD5.
+.LP
+Back at university I was side tracked for a while writing YAMA - a 
+sort of portable MUD writing system, but which had an almost assembler
+like mentatilty and a tendancy to crash if you put bugs in the database
+code. On the other hand it runs a 300 room game on a 1Mb 286 PC running 
+DOS, and is very portable ( AmigaDOS, MiNT (Atari ST), Sys5 Unix, BSD Unix,
+Linux, DOS, Windows ).
+.LP
+After playing with YAMA for a while I got back to AberMUD5, and 
+with the computer society now having a machine I had a host for it. It
+took 2 months before it would run on the machine with its 1Mb address
+space and other problems, but it was done. Since then AberMUD5 in its
+various forms has been added to by several Swansea people and has run
+continually on the computer society system since. 
+.LP
+A few months ago the AberMUD driver was rebuilt from the old 
+pre-Horrorsoft system, debugged and expanded giving AberMUD 5.20 and
+friends which are the current fairly free release.
+

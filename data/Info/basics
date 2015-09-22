@@ -1,0 +1,21 @@
+
+AberMUD 5.20.0 / The New World                      Aber Information System
+--*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*-- 
+MUD BASICS
+
+What is a MUD?  Put simply, MUD stands for Multi-User Dungeon.  It is a
+text adventure game system with a twist:  Multiple users can be online at
+the same time, and interact with each other.  Users can work together or
+alone to solve puzzles, gather treasure (dumping into an altar for points)
+or killing monsters (also for points).  You interact with the game by 
+typing multi-word command sentences, like GET RED BOOK, EXAMINE BAR, and
+so on.  The game has over 1000 words in its vocabulary, and you can get
+an idea of some commands by typing "COMMANDS".
+
+In AberMUD, you have a "persona," a record of your progress through the
+game.  The command "SCORE" can tell you how you're doing, as you move
+through the game attaining points and levels of experience.  It will also
+tell you how strong you are.  Don't let your strength reach 0, or you'll
+die, and lose all your points!  Staying smart and alive while gaining 
+points is the way to "win" at AberMUD!  Good luck!
+

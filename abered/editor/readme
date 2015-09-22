@@ -1,0 +1,48 @@
+		Edit String (mlj_edit)
+
+Copyright (C) 1994, James Willie
+
+This may be distributed freely, but absolutely no warranty is offered.  Use
+completely at your own risk.  While I give permission to distribute mlj_edit
+I do ask that ALL files are kept.
+
+And for any who are curious: mlj_edit...M. L. Jones (Larken/Alura) :)
+
+----------------------------------------------------------------------------
+
+This editor is an edit function designed to be called by other applications.
+
+Should be noted that the gcc/djgpp binaries require go32.exe to run.  This
+can be found in the GNU directory, along with GNU CopyRight information.
+
+It returns the edited string, either in a piece of malloc'd memory, or 
+in the original buffer passed in. (Note no arrays bounds are checked)
+
+char *edit_string(current_string, (1=malloc_space:0=overwrite current))
+
+------------------------------Test Program----------------------------------
+
+The program built from test.c is just a driver to invoke the editor
+with a small string, purely for testing but shows how it is used.
+This can be built using "make test" provided the appropriate compilers
+and libraries are available.
+
+If the edit is aborted, the function abort_edit() will return 1, and 
+edit_string will return NULL.  All the functions exported from the
+mlj_edit.c file are prototyped in mlj_edit.h
+
+---------------------Functions available------------------------------------
+
+set_word_wrap()		These two turn the wrapping word wrapping mode on/off
+clr_word_wrap()		That is when a line is wrapped, try to put whole
+			words on the same line.
+
+char *edit_string(char *buf, int create_mem)	 The main edit function. 
+
+void set_header(char *s)	This allows you to set the first line of
+			the header for the editor. To give a name to
+			whats being edited.
+
+int  abort_edit()	Returns true if the last edit was aborted.
+
+

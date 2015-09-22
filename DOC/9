@@ -1,0 +1,108 @@
+.SH Players
+.LP
+A player object is not just a game user, but anything which acts of its
+own volition. A player object has properties allowing it to fight, take
+damage, carry things and controlling its behaviour a follows.
+.LP
+.IP UserKey: 16
+-1 for all non users, otherwise the user number. This 
+cannot be altered.
+.IP Strength: 16
+This controls how much damage a player can take. When
+this is reduced below zero by one of the standard 
+database actions death occurs.
+.IP Size: 16
+The players size. When something is both a player and
+an object, the object size is used. For users this
+defaults to 120, but can be set.
+.IP Weight: 16
+The weight of the player. When something is both a 
+player and an object, the object weight is used. For
+users this defaults to 120 but can be set.
+.IP Score: 16
+Older versions of the system only saved fields within
+the player structure when a user quit. Thus this field
+was part of the player structure. It is unused by the
+system.
+.IP Level: 16 
+This is intended to reflect the ability of the player.
+The database language provides several functions for
+testing and acting on this. The only direct effect it
+has is on carrying ability - which is calculated as
+10*level+400 units of weight. In addition a player can
+carry a maximum of 9 distinct items - ignoring things
+like sack contents. These are hard coded due to speed
+reasons but may be changed by altering Container.c
+.IP Flags: 16
+A set of flags governing system handling of the game
+object. 
+.LP
+The flags are:
+.LP
+.IP male 16
+The item is male. It will be addressed as him or he, and
+will set the him pronoun.
+.IP female 16
+The item is female and will set the she pronoun. Setting
+both male and female is not supported. Setting neither
+makes the item neuter.
+.IP brief 16
+Indicate to the system that the player wishes to use
+brief descriptions and messages whenever possible. Little
+in the game system currently uses this.
+.IP blind 16
+The player is blind and will fail to see some things
+happening as a result. Events that can be heard will be
+treated as if they were carried out in the dark.
+.IP deaf 16
+The player is deaf and will not hear anything. Visual
+events are unaffected. The game correctly processes 
+the combination of blind and deafness (I hope!).
+.LP
+The following commands alter the player class properties:
+.LP
+.I beplayer <item>
+.LP
+Make the item a player.
+.LP
+.I unplayer <item>
+.LP
+Remove the player properties of an item.
+.LP
+.I showplayer <item>
+.LP
+View the player properties of an item.
+.LP
+.I setpstrength <item> <value>
+.LP
+Set the strength of a player.
+.LP
+.I setplevel <item> <value>
+.LP
+Set the level of a player.
+.LP
+.I setpscore <item> <value>
+.LP
+Set the score of a player.
+.LP
+.I setpsize <item> <value>
+.LP
+Set the size of a player.
+.LP
+.I setpweight <item> <value>
+.LP
+Set the weight of a player.
+.LP
+.I setpflag <item> <flag>
+.LP
+Set a flag on a player item. You can
+remove a flag setting by using -flag.
+.LP
+.I listpflags
+.LP
+View the pflags.
+.LP
+.I namepflag <number> <name>
+.LP
+Name a player flag.
+

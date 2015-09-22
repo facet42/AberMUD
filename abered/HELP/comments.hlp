@@ -1,0 +1,6 @@
+
+	Abered version 1.3 is capable of reading comments in the zone file
+and replacing them provided they occur at the start of the zone file.  The
+command comment allows you to see what these currently are.  In the 80386
+version, they can be edited like any other description.
+

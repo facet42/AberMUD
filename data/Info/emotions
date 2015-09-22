@@ -1,0 +1,19 @@
+
+AberMUD 5.20.0 / The New World                      Aber Information System
+--*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*-- 
+In most of the game, your emotions are strictly limited.  Generally, you
+can take the following emotion actions by yourself:
+  BLUSH    SQUEEK   BURBLE   YAWN     HICCUP   BURP     SMILE    MEDITATE
+  SHRUG    COUGH    MOAN     GROAN    PURR     SULK     NOD      SIGH
+  SNIFF    FART     BEG      GURGLE   WAVE     WINK     SING     DANCE
+  SCREAM   LAUGH    CRY      GIGGLE   SNIGGER  SNICKER  YELP     APOLOGIZE
+  CHUCKLE  GRIN     BOW      BOUNCE   SNEER
+Here are things you can do to other people (i.e., HUG CAERYNN):
+     HUG       NIBBLE    BEARHUG   FONDLE    WHACK     LICK      POKE
+     FLIRT     SCRITCH   SNUGGLE   KISS      CUDDLE    STROKE    TICKLE
+     STARE     THANK     PAT       SLAP      SQUEEZE
+In some rooms, designated as "party rooms", you can do ANYTHING.  To play
+in those rooms, just type EMOTE and your action.  The EMOTE command can
+also be abbreviated to a colon (:).  So, typing       :jumps around
+would cause everyone else to see "Caerynn jumps around" (or whoever you are)
+

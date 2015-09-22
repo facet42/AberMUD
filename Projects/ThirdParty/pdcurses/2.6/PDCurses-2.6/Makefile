@@ -1,0 +1,126 @@
+# Generated automatically from Makefile.in by configure.
+# Makefile for XCurses library
+
+SHELL = /bin/sh
+
+
+
+VER=26
+VER_DOT=2.6
+PDC_DIR=PDCurses-$(VER_DOT)
+
+srcdir		=../PDCurses-2.6-src
+VPATH		=../PDCurses-2.6-src
+prefix		=c:/progra~1/PDCurses
+exec_prefix		=${prefix}
+libdir		=$(exec_prefix)/lib
+bindir		=$(exec_prefix)/bin
+includedir		=$(exec_prefix)/include
+pdcursesdir=./pdcurses
+paneldir=./panel
+demosdir=./demos
+commondir=./common
+
+INSTALL		=$(srcdir)/install-sh
+RANLIB		=ranlib
+SHLPRE = 
+SHLPST = .dll
+SHLFILE = curses
+
+all ::	pdcurses demos panel
+
+all \
+clean \
+distclean \
+mostlyclean \
+realclean ::
+	cd pdcurses; $(MAKE) $(MFLAGS) $@
+	cd panel; $(MAKE) $(MFLAGS) $@
+	cd demos; $(MAKE) $(MFLAGS) $@
+	cd tools; $(MAKE) $(MFLAGS) $@
+
+install:
+	$(INSTALL) -d -m 755 $(libdir)
+	$(INSTALL) -d -m 755 $(bindir)
+	$(INSTALL) -d -m 755 $(includedir)
+	$(INSTALL) -c -m 644 $(srcdir)/curses.h $(includedir)/xcurses.h
+	sed -e 's/#include <curses.h>/#include <xcurses.h>/' < $(srcdir)/panel.h > ./xpanel.h
+	$(INSTALL) -m 644 ./xpanel.h $(includedir)/xpanel.h
+	$(INSTALL) -c -m 644 $(pdcursesdir)/libcurses.a $(libdir)/libcurses.a
+	-$(RANLIB) $(libdir)/libcurses.a
+	-$(INSTALL) -c -m 555 $(pdcursesdir)/$(SHLPRE)$(SHLFILE)$(SHLPST) $(bindir)/$(SHLPRE)$(SHLFILE)$(SHLPST)
+	$(INSTALL) -c -m 644 $(paneldir)/libpanel.a $(libdir)/libpanel.a
+	-$(RANLIB) $(libdir)/libpanel.a
+	$(INSTALL) -c -m 755 ./xcurses-config $(bindir)/xcurses-config
+
+clean ::
+	rm -f config.cache
+
+distclean ::
+	rm -f config.log config.cache config.status
+	rm -f config.h Makefile
+
+manual:
+	cd tools; $(MAKE) $(MFLAGS) $@
+
+zip:
+	zip -y pdcurs$(VER) README INSTALL TODO Makefile.in config.h.in configure xcurses-config.in \
+	configure.in config.guess config.sub install-sh aclocal.m4 pdc64.gif \
+	curses.h xcurses.h curspriv.h panel.h maintain.er readme.* makezip.cmd \
+	pdcurses/README pdcurses/*.c demos/*.c demos/*.h \
+	common/accommon.m4 \
+	panel/README panel/*.c \
+	saa/README saa/Makefile.in \
+	dos/README dos/*.c dos/*.ini dos/*.rsp dos/*.lnk dos/*.mak dos/*.lrf \
+	os2/README os2/*.c os2/*.ini os2/*.rsp os2/*.lnk os2/*.mak os2/*.lrf os2/*.def \
+	x11/README x11/*.c x11/*.xbm x11/*.def x11/*.h x11/process/*.c x11/*.exp \
+	x11/process/*.c x11/process/*.h \
+	win32/README win32/*.c win32/*.rsp win32/*.lnk win32/*.ini win32/*.mak win32/*.lrf win32/*.def win32/*.ico win32/*.rc \
+	flexos/README flexos/*.c doc/*.man tools/manext.c \
+	pdcurses/Makefile.in pdcurses/Makefile.aix.in demos/Makefile.in panel/Makefile.in tools/Makefile.in
+#	x11/thread/*.c x11/thread/*.h \
+
+dist:
+	(cd ..; tar cvf - $(PDC_DIR)/README $(PDC_DIR)/INSTALL $(PDC_DIR)/TODO $(PDC_DIR)/Makefile.in \
+	$(PDC_DIR)/config.h.in $(PDC_DIR)/configure $(PDC_DIR)/config.guess $(PDC_DIR)/aclocal.m4 $(PDC_DIR)/common/accommon.m4 $(PDC_DIR)/xcurses-config.in \
+	$(PDC_DIR)/config.sub $(PDC_DIR)/configure.in $(PDC_DIR)/install-sh $(PDC_DIR)/curses.h $(PDC_DIR)/xcurses.h \
+	$(PDC_DIR)/curspriv.h $(PDC_DIR)/panel.h $(PDC_DIR)/pdc64.gif \
+	$(PDC_DIR)/maintain.er $(PDC_DIR)/readme.* $(PDC_DIR)/makezip.cmd \
+	$(PDC_DIR)/pdcurses/README $(PDC_DIR)/pdcurses/*.c $(PDC_DIR)/demos/*.c $(PDC_DIR)/demos/*.h $(PDC_DIR)/doc/*.man \
+	$(PDC_DIR)/panel/README $(PDC_DIR)/panel/*.c $(PDC_DIR)/*.spec \
+	$(PDC_DIR)/saa/README $(PDC_DIR)/saa/Makefile.in \
+	$(PDC_DIR)/dos/README $(PDC_DIR)/dos/*.c $(PDC_DIR)/dos/*.rsp $(PDC_DIR)/dos/*.lnk $(PDC_DIR)/dos/*.ini $(PDC_DIR)/dos/*.mak $(PDC_DIR)/dos/*.lrf \
+	$(PDC_DIR)/os2/README $(PDC_DIR)/os2/*.c $(PDC_DIR)/os2/*.rsp $(PDC_DIR)/os2/*.lnk $(PDC_DIR)/os2/*.ini $(PDC_DIR)/os2/*.mak $(PDC_DIR)/os2/*.lrf $(PDC_DIR)/os2/*.def \
+	$(PDC_DIR)/x11/README $(PDC_DIR)/x11/*.c $(PDC_DIR)/x11/*.xbm $(PDC_DIR)/x11/*.def $(PDC_DIR)/x11/*.h $(PDC_DIR)/x11/*.exp \
+	$(PDC_DIR)/x11/process/*.c $(PDC_DIR)/x11/process/*.h \
+	$(PDC_DIR)/win32/README $(PDC_DIR)/win32/*.c $(PDC_DIR)/win32/*.rsp $(PDC_DIR)/win32/*.lnk $(PDC_DIR)/win32/*.ini $(PDC_DIR)/win32/*.mak $(PDC_DIR)/win32/*.lrf $(PDC_DIR)/win32/*.def $(PDC_DIR)/win32/*.ico $(PDC_DIR)/win32/*.rc \
+	$(PDC_DIR)/flexos/README $(PDC_DIR)/flexos/*.c $(PDC_DIR)/tools/manext.c \
+	$(PDC_DIR)/pdcurses/Makefile.in $(PDC_DIR)/pdcurses/Makefile.aix.in $(PDC_DIR)/demos/Makefile.in $(PDC_DIR)/tools/Makefile.in \
+	$(PDC_DIR)/panel/Makefile.in | gzip > PDCurses-$(VER_DOT).tar.gz)
+#	$(PDC_DIR)/x11/thread/*.c $(PDC_DIR)/x11/thread/*.h \
+
+tar:
+	(cd ..; tar cvf - $(PDC_DIR)/README $(PDC_DIR)/INSTALL $(PDC_DIR)/TODO $(PDC_DIR)/Makefile.in \
+	$(PDC_DIR)/config.h.in $(PDC_DIR)/configure $(PDC_DIR)/config.guess $(PDC_DIR)/aclocal.m4 $(PDC_DIR)/common/accommon.m4 $(PDC_DIR)/xcurses-config.in \
+	$(PDC_DIR)/config.sub $(PDC_DIR)/configure.in $(PDC_DIR)/install-sh $(PDC_DIR)/curses.h $(PDC_DIR)/xcurses.h \
+	$(PDC_DIR)/curspriv.h $(PDC_DIR)/panel.h $(PDC_DIR)/pdc64.gif \
+	$(PDC_DIR)/maintain.er $(PDC_DIR)/readme.* $(PDC_DIR)/makezip.cmd \
+	$(PDC_DIR)/pdcurses/README $(PDC_DIR)/pdcurses/*.c $(PDC_DIR)/demos/*.c $(PDC_DIR)/demos/*.h $(PDC_DIR)/doc/*.man \
+	$(PDC_DIR)/panel/README $(PDC_DIR)/panel/*.c $(PDC_DIR)/*.spec \
+	$(PDC_DIR)/saa/README $(PDC_DIR)/saa/Makefile.in \
+	$(PDC_DIR)/dos/README $(PDC_DIR)/dos/*.c $(PDC_DIR)/dos/*.rsp $(PDC_DIR)/dos/*.lnk $(PDC_DIR)/dos/*.ini $(PDC_DIR)/dos/*.mak $(PDC_DIR)/dos/*.lrf \
+	$(PDC_DIR)/os2/README $(PDC_DIR)/os2/*.c $(PDC_DIR)/os2/*.rsp $(PDC_DIR)/os2/*.lnk $(PDC_DIR)/os2/*.ini $(PDC_DIR)/os2/*.mak $(PDC_DIR)/os2/*.lrf $(PDC_DIR)/os2/*.def \
+	$(PDC_DIR)/x11/README $(PDC_DIR)/x11/*.c $(PDC_DIR)/x11/*.xbm $(PDC_DIR)/x11/*.def $(PDC_DIR)/x11/*.h $(PDC_DIR)/x11/*.exp \
+	$(PDC_DIR)/x11/process/*.c $(PDC_DIR)/x11/process/*.h \
+	$(PDC_DIR)/win32/README $(PDC_DIR)/win32/*.c $(PDC_DIR)/win32/*.rsp $(PDC_DIR)/win32/*.lnk $(PDC_DIR)/win32/*.ini $(PDC_DIR)/win32/*.mak $(PDC_DIR)/win32/*.lrf $(PDC_DIR)/win32/*.def $(PDC_DIR)/win32/*.ico $(PDC_DIR)/win32/*.rc \
+	$(PDC_DIR)/flexos/README $(PDC_DIR)/flexos/*.c $(PDC_DIR)/tools/manext.c \
+	$(PDC_DIR)/pdcurses/Makefile.in $(PDC_DIR)/pdcurses/Makefile.aix.in $(PDC_DIR)/demos/Makefile.in $(PDC_DIR)/tools/Makefile.in \
+	$(PDC_DIR)/panel/Makefile.in | compress > PDCurses-$(VER_DOT).tar.Z)
+#	$(PDC_DIR)/x11/thread/*.c $(PDC_DIR)/x11/thread/*.h \
+
+rpm: dist
+	cp $(srcdir)/../PDCurses-$(VER_DOT).tar.gz /usr/src/redhat/SOURCES
+	rpm -ba $(srcdir)/PDCurses-$(VER_DOT).spec
+#
+# End of makefile
+#

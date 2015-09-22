@@ -1,0 +1,525 @@
+diff -ipuwr -x '*.bak' -x '*.orig' -x '*.rej' -x '*.new' -x '*~' PDCurses-2.6-orig/Makefile.in PDCurses-2.6-src/Makefile.in
+--- PDCurses-2.6-orig/Makefile.in	2003-01-03 10:46:55.000000000 +0100
++++ PDCurses-2.6-src/Makefile.in	2005-03-12 18:19:24.234375000 +0100
+@@ -24,7 +24,7 @@ INSTALL		=$(srcdir)/install-sh
+ RANLIB		=@RANLIB@
+ SHLPRE = @SHLPRE@
+ SHLPST = @SHLPST@
+-SHLFILE = XCurses
++SHLFILE = curses
+ 
+ all ::	pdcurses demos panel
+ 
+@@ -45,15 +45,15 @@ install:
+ 	$(INSTALL) -c -m 644 $(srcdir)/curses.h $(includedir)/xcurses.h
+ 	sed -e 's/#include <curses.h>/#include <xcurses.h>/' < $(srcdir)/panel.h > ./xpanel.h
+ 	$(INSTALL) -m 644 ./xpanel.h $(includedir)/xpanel.h
+-	$(INSTALL) -c -m 644 $(pdcursesdir)/libXCurses.a $(libdir)/libXCurses.a
+-	-$(RANLIB) $(libdir)/libXCurses.a
+-	-$(INSTALL) -c -m 555 $(pdcursesdir)/$(SHLPRE)$(SHLFILE)$(SHLPST) $(libdir)/$(SHLPRE)$(SHLFILE)$(SHLPST)
+-	$(INSTALL) -c -m 644 $(paneldir)/libpanel.a $(libdir)/libXpanel.a
+-	-$(RANLIB) $(libdir)/libXpanel.a
++	$(INSTALL) -c -m 644 $(pdcursesdir)/libcurses.a $(libdir)/libcurses.a
++	-$(RANLIB) $(libdir)/libcurses.a
++	-$(INSTALL) -c -m 555 $(pdcursesdir)/$(SHLPRE)$(SHLFILE)$(SHLPST) $(bindir)/$(SHLPRE)$(SHLFILE)$(SHLPST)
++	$(INSTALL) -c -m 644 $(paneldir)/libpanel.a $(libdir)/libpanel.a
++	-$(RANLIB) $(libdir)/libpanel.a
+ 	$(INSTALL) -c -m 755 ./xcurses-config $(bindir)/xcurses-config
+ 
+ clean ::
+-	rm -f config.log config.cache config.status
++	rm -f config.cache
+ 
+ distclean ::
+ 	rm -f config.log config.cache config.status
+diff -ipuwr -x '*.bak' -x '*.orig' -x '*.rej' -x '*.new' -x '*~' PDCurses-2.6-orig/configure PDCurses-2.6-src/configure
+--- PDCurses-2.6-orig/configure	2002-11-18 11:37:54.000000000 +0100
++++ PDCurses-2.6-src/configure	2005-03-06 20:00:59.093750000 +0100
+@@ -2267,7 +2267,7 @@ mh_solaris_path=""
+ for mh_lib in $mh_libs; do
+   mh_lib_found=no
+   for ac_dir in $mh_lib_dirs ; do
+-    for mh_ext in a so sl; do
++    for mh_ext in a so sl dll.a ; do
+       if test -r $ac_dir/lib$mh_lib.$mh_ext; then
+         if test "x$mh_prev_dir" != "x$ac_dir" ; then
+           if test "x$mh_prev_dir" = "x" ; then
+diff -ipuwr -x '*.bak' -x '*.orig' -x '*.rej' -x '*.new' -x '*~' PDCurses-2.6-orig/curses.h PDCurses-2.6-src/curses.h
+--- PDCurses-2.6-orig/curses.h	2002-11-27 12:22:46.000000000 +0100
++++ PDCurses-2.6-src/curses.h	2005-03-12 18:27:25.453125000 +0100
+@@ -975,7 +975,7 @@ typedef struct
+ 
+ 
+ /* external variables */
+-#if !defined(PDC_STATIC_BUILD) && defined(_MSC_VER) && defined(WIN32) && !defined(CURSES_LIBRARY)
++#if !defined(PDC_STATIC_BUILD) && defined(WIN32) && !defined(CURSES_LIBRARY)
+ __declspec(dllimport)	int	LINES;		/* terminal height		*/
+ __declspec(dllimport)	int	COLS;		/* terminal width		*/
+ __declspec(dllimport)	WINDOW*	stdscr;		/* the default screen window	*/
+@@ -986,7 +986,7 @@ __declspec(dllimport)	MOUSE_STATUS Mouse
+ __declspec(dllimport)	int COLORS;
+ __declspec(dllimport)	int COLOR_PAIRS;
+ #else
+-# if !defined(PDC_STATIC_BUILD) && defined(_MSC_VER) && defined(WIN32)
++# if !defined(PDC_STATIC_BUILD) && defined(WIN32)
+ __declspec(dllexport) extern	int	LINES;		/* terminal height		*/
+ __declspec(dllexport) extern	int	COLS;		/* terminal width		*/
+ __declspec(dllexport) extern	WINDOW*	stdscr;		/* the default screen window	*/
+diff -ipuwr -x '*.bak' -x '*.orig' -x '*.rej' -x '*.new' -x '*~' PDCurses-2.6-orig/demos/Makefile.in PDCurses-2.6-src/demos/Makefile.in
+--- PDCurses-2.6-orig/demos/Makefile.in	2001-01-10 09:27:37.000000000 +0100
++++ PDCurses-2.6-src/demos/Makefile.in	2005-03-12 18:17:56.875000000 +0100
+@@ -14,26 +14,28 @@ CC		= @CC@
+ CFLAGS		= @CFLAGS@
+ 
+ INCDIR		= $(srcdir)
+-CPPFLAGS	= -I$(INCDIR) -I$(srcdir)/.. -I.. @DEFS@ -DXCURSES @SYS_DEFS@
++CPPFLAGS	= -I$(INCDIR) -I$(srcdir)/.. -I.. @DEFS@ @SYS_DEFS@
+ 
+ CCFLAGS		= -c $(CFLAGS) $(CPPFLAGS) @MH_XINC_DIR@
+ 
+-LIB_DEPS	=	-L../pdcurses -lXCurses
+-LIBXCURSES	=	../pdcurses/libXCurses.a
++LIB_DEPS	=	-L../pdcurses -lcurses
++LIBXCURSES	=	../pdcurses/libcurses.a
+ 
+ PANEL_LIB	=	-L../panel -lpanel
+ LIBPANEL	=	../panel/libpanel.a
+ 
+ LINK		= @PURIFY@ $(CC)
+-LDFLAGS		= $(LIB_DEPS) @LDFLAGS@ @LIBS@ @MH_XLIBS@ @MH_EXTRA_LIBS@
++LDFLAGS		= $(LIB_DEPS) @LDFLAGS@ @LIBS@ 
++
++EXEEXT		= .exe
+ 
+ DEMOS = \
+-	firework \
+-	newdemo \
+-	ptest \
+-	testcurs \
+-	tuidemo \
+-	xmas 
++	firework$(EXEEXT) \
++	newdemo$(EXEEXT) \
++	ptest$(EXEEXT) \
++	testcurs$(EXEEXT) \
++	tuidemo$(EXEEXT) \
++	xmas$(EXEEXT) 
+ 
+ all: $(DEMOS) 
+ 
+@@ -43,22 +45,22 @@ $(LIBXCURSES):
+ $(LIBPANEL):
+ 	cd ../panel; $(MAKE) $(MFLAGS)
+ 
+-firework: firework.o $(LIBXCURSES)
++firework$(EXEEXT): firework.o $(LIBXCURSES)
+ 	$(LINK) firework.o -o $@ $(LDFLAGS)
+ 
+-newdemo: newdemo.o $(LIBXCURSES)
++newdemo$(EXEEXT): newdemo.o $(LIBXCURSES)
+ 	$(LINK) newdemo.o -o $@ $(LDFLAGS)
+ 
+-ptest: ptest.o $(LIBXCURSES) $(LIBPANEL)
++ptest$(EXEEXT): ptest.o $(LIBXCURSES) $(LIBPANEL)
+ 	$(LINK) ptest.o -o $@ $(PANEL_LIB) $(LDFLAGS)
+ 
+-testcurs: testcurs.o $(LIBXCURSES)
++testcurs$(EXEEXT): testcurs.o $(LIBXCURSES)
+ 	$(LINK) testcurs.o -o $@ $(LDFLAGS)
+ 
+-tuidemo: tuidemo.o tui.o $(LIBXCURSES)
++tuidemo$(EXEEXT): tuidemo.o tui.o $(LIBXCURSES)
+ 	$(LINK) tui.o tuidemo.o -o $@ $(LDFLAGS)
+ 
+-xmas: xmas.o $(LIBXCURSES)
++xmas$(EXEEXT): xmas.o $(LIBXCURSES)
+ 	$(LINK) xmas.o -o $@ $(LDFLAGS)
+ 
+ 
+diff -ipuwr -x '*.bak' -x '*.orig' -x '*.rej' -x '*.new' -x '*~' PDCurses-2.6-orig/install-sh PDCurses-2.6-src/install-sh
+--- PDCurses-2.6-orig/install-sh	2001-01-10 09:31:39.000000000 +0100
++++ PDCurses-2.6-src/install-sh	2005-03-06 20:51:21.187500000 +0100
+@@ -35,8 +35,8 @@ doit="${DOITPROG-}"
+ 
+ # put in absolute paths if you don't have them in your path; or use env. vars.
+ 
+-mvprog="${MVPROG-mv}"
+-cpprog="${CPPROG-cp}"
++mvprog="${MVPROG-mv -f}"
++cpprog="${CPPROG-cp -fp}"
+ chmodprog="${CHMODPROG-chmod}"
+ chownprog="${CHOWNPROG-chown}"
+ chgrpprog="${CHGRPPROG-chgrp}"
+diff -ipuwr -x '*.bak' -x '*.orig' -x '*.rej' -x '*.new' -x '*~' PDCurses-2.6-orig/pdcurses/Makefile.in PDCurses-2.6-src/pdcurses/Makefile.in
+--- PDCurses-2.6-orig/pdcurses/Makefile.in	2002-07-11 12:20:44.000000000 +0200
++++ PDCurses-2.6-src/pdcurses/Makefile.in	2005-03-12 18:16:03.078125000 +0100
+@@ -10,10 +10,11 @@ THIS		= Makefile
+ @SET_MAKE@
+ 
+ srcdir		= @srcdir@
+-x11basedir		= $(srcdir)/../x11
++resdir		= ../res
++x11basedir		= $(srcdir)/../win32
+ x11dir		= $(x11basedir)/@x11type@
+ 
+-VPATH		= @srcdir@
++VPATH		= @srcdir@ $(resdir)
+ prefix		= @prefix@
+ exec_prefix	= @exec_prefix@
+ libdir		= $(exec_prefix)
+@@ -24,17 +25,18 @@ PDCURSES_CONFIG_H		=../config.h
+ PDCURSES_CURSES_H		=$(PDCURSES_HOME)/curses.h
+ PDCURSES_CURSPRIV_H		=$(PDCURSES_HOME)/curspriv.h
+ PDCURSES_HEADERS		=$(PDCURSES_CONFIG_H) $(PDCURSES_CURSES_H) $(PDCURSES_CURSPRIV_H)
+-PDCURSES_X11_H		=$(x11basedir)/pdcx11.h
++PDCURSES_X11_H		=#$(x11basedir)/pdcx11.h
+ 
+ INSTALL		= @INSTALL@
+ INSTALL_DATA	= @INSTALL_DATA@
+ 
+-SHL_TARGETS =      @SHL_TARGETS@
++LIBS =				-lgw32c -liberty -lole32 -luuid
++SHL_TARGETS =      $(SHLFILE).dll
+ DYN_COMP =         @DYN_COMP@
+ SHLPRE =           @SHLPRE@
+ SHLPST =           @SHLPST@
+-LD_RXLIB1  =       @LD_RXLIB1@
+-LD_RXLIB2  =       # @MH_XLIBS@ @MH_EXTRA_LIBS@ -lc
++LD_RXLIB1  =       o2dll -o $@ 
++LD_RXLIB2  =       -version-number 2.6 $(LIBS) 
+ O2SAVE  =          @O2SAVE@
+ O2SHO  =           @O2SHO@
+ CC2O   =           @CC2O@
+@@ -42,10 +44,11 @@ SAVE2O  =          @SAVE2O@
+ DYNAMIC_LDFLAGS  = @DYNAMIC_LDFLAGS@ $(EEXTRA)
+ 
+ CC		= @CC@
+-CFLAGS		= @CFLAGS@
++CFLAGS		= @CFLAGS@ -D_MSC_VER -DCURSES_LIBRARY
++STAT_COMP	= -DPDC_STATIC_BUILD
+ 
+ INCDIR		= $(srcdir)
+-CPPFLAGS	= -I$(INCDIR) -I$(srcdir)/.. -I.. @DEFS@ -DXCURSES @SYS_DEFS@ -I$(x11basedir) -I$(x11dir)
++CPPFLAGS	= -I$(INCDIR) -I$(srcdir)/.. -I.. @DEFS@ @SYS_DEFS@ -I$(x11basedir) -I$(x11dir)
+ 
+ CCFLAGS		= -c $(CFLAGS) $(CPPFLAGS) @MH_XINC_DIR@
+ 
+@@ -54,9 +57,9 @@ LDFLAGS		= 
+ 
+ RANLIB		= @RANLIB@
+ 
+-LIBRARIES	= libXCurses.a
++LIBRARIES	= libcurses.a
+ 
+-SHLFILE = XCurses
++SHLFILE = curses
+ 
+ ################################################################################
+ all :	$(LIBRARIES) $(SHL_TARGETS)
+@@ -127,7 +130,7 @@ pdcsetsc.o   \
+ pdcutil.o   \
+ pdcwin.o
+ 
+-X11OBJS =   \
++#X11OBJS =   \
+ pdcx11.o    \
+ x11curses.o \
+ x11common.o \
+@@ -172,7 +175,8 @@ termattr.sho  \
+ terminfo.sho  \
+ touch.sho     \
+ util.sho      \
+-window.sho
++window.sho	  \
++curses-dllversion.sho
+ 
+ PDCSHOBJS =   \
+ pdcclip.sho   \
+@@ -186,7 +190,7 @@ pdcsetsc.sho   \
+ pdcutil.sho   \
+ pdcwin.sho
+ 
+-X11SHOBJS =   \
++#X11SHOBJS =   \
+ pdcx11.sho    \
+ x11curses.sho \
+ x11common.sho \
+@@ -196,7 +200,7 @@ ScrollBox.sho
+ 
+ SHOFILES = $(LIBSHOBJS) $(PDCSHOBJS) $(X11SHOBJS)
+ 
+-libXCurses.a : $(LIBOBJS) $(PDCOBJS) $(X11OBJS)
++libcurses.a : $(LIBOBJS) $(PDCOBJS) $(X11OBJS)
+ 	ar rv $@ $?
+ 	-$(RANLIB) $@
+ 
+@@ -204,164 +208,164 @@ $(SHLPRE)$(SHLFILE)$(SHLPST) : $(SHOFILE
+ 	$(LD_RXLIB1) $(RXPACKEXPORTS) -o $@ $(SHOFILES) $(LD_RXLIB2)
+ 
+ addch.o: $(srcdir)/addch.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/addch.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/addch.c
+ 
+ addchstr.o: $(srcdir)/addchstr.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/addchstr.c
++	$(CC) $(CCFLAGS) $(STAT_COMP)  -o $@ $(srcdir)/addchstr.c
+ 
+ addstr.o: $(srcdir)/addstr.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/addstr.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/addstr.c
+ 
+ attr.o: $(srcdir)/attr.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/attr.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/attr.c
+ 
+ beep.o: $(srcdir)/beep.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/beep.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/beep.c
+ 
+ bkgd.o: $(srcdir)/bkgd.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/bkgd.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/bkgd.c
+ 
+ border.o: $(srcdir)/border.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/border.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/border.c
+ 
+ clear.o: $(srcdir)/clear.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/clear.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/clear.c
+ 
+ color.o: $(srcdir)/color.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/color.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/color.c
+ 
+ delch.o: $(srcdir)/delch.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/delch.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/delch.c
+ 
+ deleteln.o: $(srcdir)/deleteln.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/deleteln.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/deleteln.c
+ 
+ getch.o: $(srcdir)/getch.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/getch.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/getch.c
+ 
+ getstr.o: $(srcdir)/getstr.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/getstr.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/getstr.c
+ 
+ getyx.o: $(srcdir)/getyx.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/getyx.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/getyx.c
+ 
+ inch.o: $(srcdir)/inch.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/inch.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/inch.c
+ 
+ inchstr.o: $(srcdir)/inchstr.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/inchstr.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/inchstr.c
+ 
+ initscr.o: $(srcdir)/initscr.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/initscr.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/initscr.c
+ 
+ inopts.o: $(srcdir)/inopts.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/inopts.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/inopts.c
+ 
+ insch.o: $(srcdir)/insch.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/insch.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/insch.c
+ 
+ insstr.o: $(srcdir)/insstr.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/insstr.c
++	$(CC) $(CCFLAGS) $(STAT_COMP)  -o $@ $(srcdir)/insstr.c
+ 
+ instr.o: $(srcdir)/instr.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/instr.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/instr.c
+ 
+ kernel.o: $(srcdir)/kernel.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/kernel.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/kernel.c
+ 
+ mouse.o: $(srcdir)/mouse.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/mouse.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/mouse.c
+ 
+ move.o: $(srcdir)/move.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/move.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/move.c
+ 
+ outopts.o: $(srcdir)/outopts.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/outopts.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/outopts.c
+ 
+ overlay.o: $(srcdir)/overlay.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/overlay.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/overlay.c
+ 
+ pad.o: $(srcdir)/pad.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/pad.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/pad.c
+ 
+ printw.o: $(srcdir)/printw.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/printw.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/printw.c
+ 
+ refresh.o: $(srcdir)/refresh.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/refresh.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/refresh.c
+ 
+ scanw.o: $(srcdir)/scanw.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/scanw.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/scanw.c
+ 
+ scroll.o: $(srcdir)/scroll.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/scroll.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/scroll.c
+ 
+ slk.o: $(srcdir)/slk.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/slk.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/slk.c
+ 
+ termattr.o: $(srcdir)/termattr.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/termattr.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/termattr.c
+ 
+ terminfo.o: $(srcdir)/terminfo.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/terminfo.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/terminfo.c
+ 
+ touch.o: $(srcdir)/touch.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/touch.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/touch.c
+ 
+ util.o: $(srcdir)/util.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/util.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/util.c
+ 
+ window.o: $(srcdir)/window.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/window.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/window.c
+ 
+ 
+ pdcclip.o: $(x11basedir)/pdcclip.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(x11basedir)/pdcclip.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(x11basedir)/pdcclip.c
+ 
+ pdcdebug.o: $(srcdir)/pdcdebug.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/pdcdebug.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/pdcdebug.c
+ 
+ pdcdisp.o: $(x11basedir)/pdcdisp.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(x11basedir)/pdcdisp.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(x11basedir)/pdcdisp.c
+ 
+ pdcgetsc.o: $(x11basedir)/pdcgetsc.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(x11basedir)/pdcgetsc.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(x11basedir)/pdcgetsc.c
+ 
+ pdckbd.o: $(x11basedir)/pdckbd.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(x11basedir)/pdckbd.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(x11basedir)/pdckbd.c
+ 
+ pdcprint.o: $(x11basedir)/pdcprint.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(x11basedir)/pdcprint.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(x11basedir)/pdcprint.c
+ 
+ pdcscrn.o: $(x11basedir)/pdcscrn.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(x11basedir)/pdcscrn.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(x11basedir)/pdcscrn.c
+ 
+ pdcsetsc.o: $(x11basedir)/pdcsetsc.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(x11basedir)/pdcsetsc.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(x11basedir)/pdcsetsc.c
+ 
+ pdcutil.o: $(srcdir)/pdcutil.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/pdcutil.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/pdcutil.c
+ 
+ pdcwin.o: $(srcdir)/pdcwin.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(srcdir)/pdcwin.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(srcdir)/pdcwin.c
+ 
+ pdcx11.o: $(x11basedir)/pdcx11.c $(PDCURSES_HEADERS) $(PDCURSES_X11_H)
+-	$(CC) $(CCFLAGS) -o $@ $(x11basedir)/pdcx11.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(x11basedir)/pdcx11.c
+ 
+ ScrollBox.o: $(x11basedir)/ScrollBox.c $(PDCURSES_HEADERS) $(PDCURSES_X11_H)
+-	$(CC) $(CCFLAGS) -o $@ $(x11basedir)/ScrollBox.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(x11basedir)/ScrollBox.c
+ 
+ sb.o: $(x11basedir)/sb.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(x11basedir)/sb.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(x11basedir)/sb.c
+ 
+ x11common.o: $(x11dir)/x11common.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(x11dir)/x11common.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(x11dir)/x11common.c
+ 
+ x11.o: $(x11dir)/x11.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(x11dir)/x11.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(x11dir)/x11.c
+ 
+ x11curses.o: $(x11dir)/x11curses.c $(PDCURSES_HEADERS)
+-	$(CC) $(CCFLAGS) -o $@ $(x11dir)/x11curses.c
++	$(CC) $(CCFLAGS) $(STAT_COMP) -o $@ $(x11dir)/x11curses.c
+ 
+ 
+ addch.sho: $(srcdir)/addch.c $(PDCURSES_HEADERS)
+@@ -682,3 +686,9 @@ x11curses.sho: $(x11dir)/x11curses.c $(P
+ 	$(CC) $(CCFLAGS) $(DYN_COMP) $(CC2O) $(x11dir)/x11curses.c
+ 	$(O2SHO)
+ 	$(SAVE2O)
++
++curses-dllversion.sho: $(resdir)/curses-dllversion.c $(PDCURSES_HEADERS)
++	$(O2SAVE)
++	$(CC) $(CCFLAGS) $(DYN_COMP) $(CC2O) $(resdir)/curses-dllversion.c
++	$(O2SHO)
++	$(SAVE2O)
+diff -ipuwr -x '*.bak' -x '*.orig' -x '*.rej' -x '*.new' -x '*~' PDCurses-2.6-orig/tools/Makefile.in PDCurses-2.6-src/tools/Makefile.in
+--- PDCurses-2.6-orig/tools/Makefile.in	2001-01-10 09:31:14.000000000 +0100
++++ PDCurses-2.6-src/tools/Makefile.in	2005-03-12 18:18:36.328125000 +0100
+@@ -21,6 +21,8 @@ CCFLAGS		= -c $(CFLAGS) $(CPPFLAGS) 
+ LINK		= $(CC)
+ LDFLAGS		= @LDFLAGS@ @LIBS@ 
+ 
++EXEEXT		= .exe
++
+ DOC_DIR=$(srcdir)/../doc
+ INC_DIR=$(srcdir)/..
+ PDCURSES_DIR=$(srcdir)/../pdcurses
+@@ -64,7 +66,7 @@ install:
+ 	echo Does nothing at the moment
+ 
+ clean:
+-	-rm -rf *.o manext PDCurses.man
++	-rm -rf *.o manext$(EXEEXT) PDCurses.man
+ 
+ distclean: clean
+ 	-rm -f Makefile
+diff -ipuwr -x '*.bak' -x '*.orig' -x '*.rej' -x '*.new' -x '*~' PDCurses-2.6-orig/xcurses.h PDCurses-2.6-src/xcurses.h
+--- PDCurses-2.6-orig/xcurses.h	2002-11-27 12:22:46.000000000 +0100
++++ PDCurses-2.6-src/xcurses.h	2005-03-12 18:27:25.453125000 +0100
+@@ -975,7 +975,7 @@ typedef struct
+ 
+ 
+ /* external variables */
+-#if !defined(PDC_STATIC_BUILD) && defined(_MSC_VER) && defined(WIN32) && !defined(CURSES_LIBRARY)
++#if !defined(PDC_STATIC_BUILD) && defined(WIN32) && !defined(CURSES_LIBRARY)
+ __declspec(dllimport)	int	LINES;		/* terminal height		*/
+ __declspec(dllimport)	int	COLS;		/* terminal width		*/
+ __declspec(dllimport)	WINDOW*	stdscr;		/* the default screen window	*/
+@@ -986,7 +986,7 @@ __declspec(dllimport)	MOUSE_STATUS Mouse
+ __declspec(dllimport)	int COLORS;
+ __declspec(dllimport)	int COLOR_PAIRS;
+ #else
+-# if !defined(PDC_STATIC_BUILD) && defined(_MSC_VER) && defined(WIN32)
++# if !defined(PDC_STATIC_BUILD) && defined(WIN32)
+ __declspec(dllexport) extern	int	LINES;		/* terminal height		*/
+ __declspec(dllexport) extern	int	COLS;		/* terminal width		*/
+ __declspec(dllexport) extern	WINDOW*	stdscr;		/* the default screen window	*/

@@ -1,0 +1,16 @@
+  Zap command in abermud is used to delete players, kill mobiles. It is rather
+the same here, except that there are no players, and rooms and objects can
+just as easily be zapped. The letter infront of zap, eg Lzap, Mzap and Ozap
+just indicates what type of thing you want to delete. Once deleted it is
+gone. You could quit, and re-load the zone file though. Kill is just mzap
+with slightly different message.
+
+  You should think about what happens to objects, mobiles in rooms, or
+objects or carried by mobiles that you zap. They will in general be put some
+where logical, but you should check this yourself. Check command may show
+errors in zones made this way.
+
+  The editor is disgned to look a little like the game, and if the editor
+does not know what to do with something, or it's location isn't known, then
+you are carrying it by default. 
+

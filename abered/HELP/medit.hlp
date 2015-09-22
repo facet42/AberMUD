@@ -1,0 +1,27 @@
+
+    MEDIT <mobile> <what> Possible values
+
+Value of what
+~~~~~~~~~~~~~~
+Name         : The internal name of the mobile. The mud needs this to be
+               a unique name. (For the zone)
+Pname        : This is the title of the mobile, the game will name it by the
+               the last word. This is NOT what you see when you enter a room
+               andis often identical to the name.
+Location     : The name of the room the mobile starts in
+Description  : A short description of what the player will see when they enter
+               the room.
+Strength     : This is the Hit Points or life force of the mobile. How much
+               damage you need to do to kill it.
+Damage       : The amount of damage a mobile does. (eg 1 d Damage)
+Aggression   : A range from 0 to 100, it is a percentage, 0 meaning the mobile
+               will never start a fight, 100 means it will attack on sight.
+Armor        : The natural armor class of the mobile
+Speed        : How often a mobile will move, talk etc. 5 is the default value
+               and 20 is very fast. 0 will not move at all
+Examine      : The text you see when you type examine mobile. Due to a bug in
+               quite a few dirt muds this does not work.
+
+The flags of mobiles are done from the flag functions. Ask gods if you
+require explanation of those.
+

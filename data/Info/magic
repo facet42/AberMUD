@@ -1,0 +1,16 @@
+
+AberMUD 5.20.0 / The New World                      Aber Information System
+--*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*-- 
+Magic and spells in AberMUD
+
+Many powerful spells lie within the realm of the game.  Several are
+specific to certain areas of the land; however, some will work in any
+situation.  Some areas of the game are out of reach of your magic. In
+addition, you cannot cast spells in the start room, or certain other
+areas.
+
+To cast a spell, you must have enough strength, and be of a high enough
+level.  These minimums vary from spell to spell.  Generally, most spells
+also have a target - you have to specify whom you're casting the spell at.
+
+For a list of spells, type INFO SPELLS

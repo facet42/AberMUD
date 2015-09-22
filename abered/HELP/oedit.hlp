@@ -1,0 +1,59 @@
+
+    OEDIT <obj> <what> .....
+
+Objects are probably the most complicated things in the mud.
+Values for what.
+~~~~~~~~~~~~~~~~~
+
+Name         : This is the internal name for the object and must be unique
+               within the zone. Players never see this. 16 chars MAX
+Pname        : The main name the players will use and see for the object.
+Altname      : A secondary name. It is best to try to make Pnames less general
+               and hopefully unique, while altname may be something like gold
+               (a more general name) This is only to help players. Try to give
+               altnames when possible.
+Location     : This has 2 parts. A location type (see below) and the actual
+               location.
+Damage       : If DICE is not defined true, then it is the damage a weapon 
+               would do. eg 1 d Damage. (mob/players natural damage gets added
+               on here) If dice is defined, it will do DICE d DAMAGE.
+Dice         : OPTIONAL, the number of dice damage done.
+Examine      : This is the examine text for objects.
+Armor        : If the object is armor, this is the armor class. Higher the 
+               better. But don't over do this. 20 is extremely high. Only
+               full suites of armor would have 20, eg Bodyarmor from abyss.
+               The armor from dwarves cave is 15, mosts shields are 10 or less
+MaxState     : An object can have up to 4 states. This is the biggest state
+               this object should ever have. (0 - 3)
+State        : The starting state of the object. NOTE: Doors, 0 = open
+               1 = closed, 2 = locked. (Yes states go from 0 - 3)
+Bvalue       : Base Value of the object. Basically the most you'd ever get
+               for pitting this. Note that though it is a value, it is the
+               value you get for sacrificing it to gods. Nothing to do with
+               how good or useful something is. In fact, good armor and weapons
+               should get low values so as not to encourage people to pit it.
+Size         : How big something is. Note that it is how much a container
+               can hold. 50 is pretty big.
+Weight       : How much something weighs. Not implemented on many dirts.
+Description  : These are linked to the states. It is what you see when you
+               enter a room, see the object on the ground. But there may be
+               one for each state of the object, and you see the one of the
+               objects current state.
+Linked       : The object is linked to another object means basically, they
+               share state variable. Their states will always be the same.
+               Doors are linked together. A door has 2 sides, one in each room
+               and the two parts must be linked.
+Counter      : This is OPTIONAL and is another variable coders can use instead
+               of damage. It's exact use is mud dependant, but burning branches
+               may use this to count down till the burn out.
+
+Location types
+~~~~~~~~~~~~~~~
+UNKNOWN      : You can't have this value in the mud.
+IN_ROOM      : The object is just sitting in a room
+IN_CONTAINER : The objects in another object.
+CARRIED_BY   : Some mobile is carrying it.
+WORN_BY      : A mobile wears it.
+WIELDED_BY   : Some mobile wields it.
+BOTH_BY      : It is both worn and wielded
+

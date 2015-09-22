@@ -1,0 +1,19 @@
+
+AberMUD 5.20.0 / The New World                      Aber Information System
+--*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*-- 
+Moving around in AberMUD
+
+Moving around is easy.  Single word commands allow basic movement, and more
+complex actions are also availble.  Generally, exit directions are the four
+compass points, and can be abbreviated to single letters "N E S W."  Up and
+Down ("U D") and In and Out are also options.  To see what exits are 
+available in an area, type EXITS.
+
+Less obvious exits are also often available.  It may be possible to GET IN
+something, or CLIMB it, or JUMP off of it (sometimes an easy way to die!)
+Experimentation is sometimes the best way to learn!  Typing LOOK will re-
+display a room; and, often, exits can be hidden within room descriptions.
+
+If you get stuck, you can always try SHOUTing for help, but it's a hard
+land, here...
+

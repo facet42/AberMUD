@@ -1,0 +1,116 @@
+.SH Objects
+.LP
+Any item which can be carried around is probably best set
+to be an object. Many things that can't be carried around
+are object too. To make something an object type 
+.I beobject <item>.
+To remove its object properties type
+.I unobject <item>.
+.LP 
+An object has the following properties which can be viewed by
+typing 
+.I showobject <item>.
+.LP
+.IP Descriptions: 25
+Four descriptions, one for each state. These
+are set using
+.I setdesc <item> <state> <text>.
+As with rooms *text means load from a file. Its
+a common trick to use state 3 to hold examine
+texts for everything.
+.IP Size: 25
+The amount of space the item takes out. Set using
+setosize. Keep this below about 1000 to avoid 
+weights wrapping over the size of a number and
+giving odd results. Use the
+.I osize <item> <value>
+command to set this.
+.IP Weight: 25
+The weight of the item (without any contents).
+The same comments about values apply as with
+sizes. Use the 
+.I oweight <item> <value>
+command to set this.
+.IP Flags: 25
+Flags controlling the behaviour of an object.
+.SP 2
+.LP
+The flags are:
+.IP Flannel: 25
+In a description the item is tacked onto the end of
+the room description not listed on a line of its own.
+.IP NoIt: 25
+The item will not automatically become 'it' if seen.
+.IP Worn: 25
+The item is currently worn.
+.IP Destroyed: 25
+Obsolete and unused.
+.IP CanGet: 25
+The item can be picked up.
+.IP CanWear: 25
+The item can be worn.
+.IP LightSource: 25
+The item is always a light source
+.IP Light0: 25
+The item is a light source when in state 0
+.IP NoSeeCarry: 25
+The item cannot be seen when it is being carried. Set
+this for small items you would not spot on someone.
+.LP
+Flags are named with 
+.I nameoflag <number> <text>.
+They are listed with 
+.I listoflags.
+You can set and unset flags on an object by doing
+.I setoflag <item> <flagname>.
+Use -<flagname> to remove a flag.
+.SH Containers
+Several other classes are commonly associated with Objects, although they can be
+used with any type of item. In paticular the container class.
+.LP
+To make something a container you use the command 
+.I BeContainer <item>.
+To remove its container properties you use the command
+.I UnContainer <item>.
+.LP
+A container has only two properties
+.IP Volume: 25
+The total item size you can fit in the item. This is
+set with the command
+.I setvolume <item> <value>.
+.IP Flags: 25
+Flags controlling the item.
+.LP
+The flags are:
+.IP soft: 25
+The size of the container increases by the size of its
+contents. For example a bag.
+.IP seethru: 25
+The contents of the item can be seen, also light sources
+in the item illuminate the parent item.
+.IP canputin: 25
+You may place items in this item with the standard
+database actions.
+.IP cangetout: 25
+You may take things from this item with the standard
+database actions. These are seperate for items like
+post boxes.
+.IP closes: 25
+The item closes, and things can only be removed or
+placed in it when it is in state 0.
+.LP
+The flags are manipulated by using 
+.I setcflag <item> <flagname>.
+As with the
+other classes -<flagname> means clear the flag. Container flags may be listed
+with 
+.I listcflags
+, and named with 
+.I namecflag <number> <name>.
+.LP
+A room can also be a container, in which case you will be unable to enter it if
+you won't fit its volume.
+
+
+
+

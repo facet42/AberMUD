@@ -1,0 +1,47 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#              Make file for IBM 80286 version of abered                      #
+#           Copyright (C) 1993 James Willie. All rights reserved.             #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+HDR = types.h macros.h extern.h
+OBJ = abered.o loc_io.o utils.o loc.o io.o mob_io.o mob.o obj_io.o obj.o
+
+CC     = pcc
+CFLAGS = -nPCC_286 -nEQBUG -nDOS_MACHINE -n_NO_WFLAGS
+
+abred286: $(OBJ) 
+	pccl $(OBJ) -Oabred286 -L\\utils\\pcc\\
+
+clean:
+	del *.o
+	del abered
+	del abered.exe
+
+abered.o: abered.c $(HDR) verbs.h
+	$(CC) abered.c $(CFLAGS)
+
+utils.o: utils.c $(HDR)
+	$(CC) utils.c $(CFLAGS) 
+
+obj.o: obj.c $(HDR) 
+	$(CC) obj.c $(CFLAGS) 
+
+loc.o: loc.c $(HDR) 
+	$(CC) loc.c $(CFLAGS) 
+
+mob.o: mob.c $(HDR)
+	$(CC) mob.c $(CFLAGS) 
+
+# I/O files 
+
+io.o: io.c $(HDR) 
+	$(CC) io.c $(CFLAGS) 
+
+loc_io.o: loc_io.c $(HDR)
+	$(CC) loc_io.c $(CFLAGS) 
+
+obj_io.o: obj_io.c $(HDR)
+	$(CC) obj_io.c $(CFLAGS) 
+
+mob_io.o: mob_io.c $(HDR)
+	$(CC) mob_io.c $(CFLAGS) 

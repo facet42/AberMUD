@@ -1,0 +1,6 @@
+
+    The 3 stat commands will display information about the apropriate thing.
+All take a name as argument. The information is displayed exactly as it would
+be written to a file, if you were to save at that moment. (It calls the same
+function, passing standard out as an argument)
+

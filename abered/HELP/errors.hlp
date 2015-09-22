@@ -1,0 +1,7 @@
+
+   The command check, will go through the objects locations and mobiles
+in an attempt to tell you about errors. Things like, exits to rooms that
+do not exist, objects in them. Linked objects that either been linked to
+something that does not exist, or to ones that are not linked back. This is 
+far from perfect, but may help with some errors.
+

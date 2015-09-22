@@ -1,0 +1,14 @@
+
+AberMUD 5.20.0 / The New World                         More Wizard Commands
+--*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*-- 
+Personal Commands
+ SETIN <text>      Set your arrival text       REVIEW   List your text set
+ SETOUT <text>     Set your departure text     SAVESET  Save your text set
+ SETHERE <text>    Set your "is here" text     SETTITLE <title>  Set title
+--*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*-- 
+Miscellaneous Commands
+ WIZLIST       List of Wizards           WIZRULES    Rules for Wizards
+ STAT <item>   Check status of an item   LISTCONTENTS <item>
+             SET <item> <state>    Change an item's state
+--*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*-- 
+

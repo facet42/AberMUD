@@ -1,0 +1,117 @@
+.SH Other Classes
+.I Snoop:
+.LP
+This class is used to maintain lists of which users are watching
+which users magically. Snoop allows a user to see exactly what appears on
+another users display. This class pair is maintained automatically by the
+system and database actions.
+.LP
+.I Dup:
+.LP
+This is used to tag temporary clones of an item. Such clones have
+to be tagged as when they are destroyed by the database they vanish forever.
+.LP
+.I InOutHere:
+.LP
+When a player moves it displays messages of the form:
+.br
+'<Name> goes north.'
+.br
+'<Name> arrives.'
+.br
+'<Name> is here.'
+.br
+'<Name> is here carrying itemlist.'
+.LP
+These text strings can be customised in the game database language. The
+current settings are stored in a InOutHere class.
+.LP
+.I Chain:
+.LP
+When the state of an item is changed by the database any item it
+is chained to also changes to that state. Note that a chain is one way,
+so that to lock a pair of items to the same state (eg a door) you would
+chain both to each other. Chains are created with the command
+.I chain <sourceitem> <targetitem>
+, and removed with the command
+.I unchain <sourceitem> <targetitem>.
+The 
+.I II
+command for viewing basic item information displays chains in its
+list of classes as 'Chain -> <targetitem>', and this command can thus
+be used to view chains.
+.LP
+.I UserFlag:
+.br
+.I UserFlag2:
+.br
+.I UserText:
+.LP
+A total of eight strings, sixteen other items and sixteen
+numbers can be stored as user flag values by the database. The 
+command
+.I showuser <item>
+displays these values. To minimise storage
+they are fragmented into three classes. One holds the first 8 items
+and values, the second the next 8 items and numbers, the final one
+holds the text. Thus you should ensure that items needing several of
+these values generally end up with all flags used falling into one
+of these categories to minimise memory usage.
+.LP
+.I Share:
+.LP
+When you have a set of identical items you can use share to
+lower memory usage. For example to create a maze you might create
+12 items set exits between them, give one a room property and then
+tell all the others to share it. Any classes an item doesn't
+posess are fetched from its shared item. It is important to note
+that anything affecting the shared class will affect the one in 
+the item it shares it from. Thus to make a room of a shared item
+and alter its properties you 
+.I MUST
+unshare it first. Shares are constructed by typing 
+.I share <item1> <item2>
+, and removed by using 
+.I unshare <item1> <item2>
+ - where item1 is the item which uses classes from item2. As 
+with chains they are shown by the
+.I II
+command. 
+.SP 2
+.SH Handy Commands
+.LP
+Several handy commands are built into the game system to aid 
+testing and building. In paticular when dumping a large game
+to generate printouts, the commands 
+.I showallplayers
+,
+.I showallrooms
+and 
+.I showallobjects
+may prove useful.
+.LP
+On especially complicated area is building a door. This requires
+creating two items, making them objects, naming them, chaining
+them to each other, placing them somewhere and finally setting
+exits in both directions. Because this is so messy a single command
+.I doorpair <adjective> <noun> <fromroom> <direction> <toroom>
+, creates a door named adjective noun in both rooms, sets initial
+descriptions links it all up and creates a bidirectional door
+between the two rooms.
+.LP
+The 
+.I users
+command gives a dump of who is playing, from where,
+and what they are doing.
+.LP
+The 
+.I status
+command gives an overall summary of system usage
+and the number of each item created.
+.LP
+The 
+.I statme
+command reports total free memory when using the
+dlibs memory allocator. This is an option which vastly speeds
+up the game boot time and improves its running performance on
+machines with broken as designed memory allocators.

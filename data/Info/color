@@ -1,0 +1,17 @@
+
+AberMUD 5.20.0 / The New World                        Aber Wizards' Library
+--*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*-- 
+An index to appearance and vanish colors:
+
+When a person appears or disappears, a certain color of light is always
+associated with the appearance or disappearance.  The light color will
+let you know what type of magic was used:
+    Multihued - A hidden form of magic was used
+    Golden    - The person used GOTO HOME
+    White     - The person was affected by an object or game magic
+    Red       - The person was SUMMONed or transported by an ArchWizard
+    Orange    - The person was SUMMONed by a wizard
+    Yellow    - The person was SUMMONed by a mortal
+    Green     - The person used VIS/INVIS
+    Blue      - The person used GOTO <object> to go where the object was
+    Purple    - The person used GOTO <room> to go to a specific room

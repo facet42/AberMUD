@@ -1,0 +1,42 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                      Make file for UNIX version of abered                   #
+#           Copyright (C) 1993 James Willie. All rights reserved.             #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+HDR = types.h macros.h extern.h
+OBJ = abered.o loc_io.o utils.o loc.o io.o mob_io.o mob.o obj_io.o obj.o
+
+#CFLAGS = -c -g -W -O
+CFLAGS = -c 
+
+abered: $(OBJ) 
+	gcc $(OBJ) -o abered 
+
+abered.o: abered.c $(HDR) verbs.h
+	gcc $(CFLAGS) abered.c 
+
+utils.o: utils.c $(HDR)
+	gcc $(CFLAGS) utils.c 
+
+obj.o: obj.c $(HDR) 
+	gcc $(CFLAGS) obj.c 
+
+loc.o: loc.c $(HDR) 
+	gcc $(CFLAGS) loc.c 
+
+mob.o: mob.c $(HDR)
+	gcc $(CFLAGS) mob.c 
+
+# I/O files 
+
+io.o: io.c $(HDR) 
+	gcc $(CFLAGS) io.c 
+
+loc_io.o: loc_io.c $(HDR)
+	gcc $(CFLAGS) loc_io.c 
+
+obj_io.o: obj_io.c $(HDR)
+	gcc $(CFLAGS) obj_io.c 
+
+mob_io.o: mob_io.c $(HDR)
+	gcc $(CFLAGS) mob_io.c

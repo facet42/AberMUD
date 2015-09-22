@@ -1,0 +1,20 @@
+
+AberMUD 5.20.0 / The New World                      Aber Information System
+--*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*-- 
+Talking to people in AberMUD
+
+Talking to people can happen in three basic ways.  You can SAY something,
+for example, SAY Hello!, and anyone in the same room as you will hear you.
+You can abbreviate SAY to a quote symbol (") if you wish.
+
+You can also TELL someone something, regardless of where they are.  For
+example, TELL Caerynn I really need some help! would send the message to
+Caerynn regardless of where you each were.
+
+You can also SHOUT a message to everyone in the game.  It's a great way to
+get help from other players, but too much shouting might irritate the lords,
+causing them to disable shouting (while they recover from their hangovers!)
+
+Of course, one of the other ways of "communicating" with people is through
+emotional expression.  Type INFO EMOTIONS for details!
+

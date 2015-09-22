@@ -1,0 +1,53 @@
+ABERED:- AberMud zone file editor
+
+Installing this is relatively simple task.
+
+Firstly unpack the archive, if you are using an IBM compatable machine
+then the binaries should be included already, though you may choose to
+rebuild then if you wish.  Two IBM binaries have been included.
+
+** IBM machine
+
+- For those with only a 286 or less
+
+This version was compiled with pcc, a shareware C compiler.  It will run on
+an 80286, though it has some limitations.  Namely it is restricted in the 
+amount of memory it can have.  The restriction is 64K and thus it can only
+handle small zones.  Suggestion is to simply break zones up into small
+pieces.  (Note 64K is NOT the file size, file size will be much less)
+In addition to this, the binary does NOT support wflags, though you could
+recompile it without _NO_WFLAGS 
+
+80386 or better.  This version was compiled with a full 32bit compiler,
+gcc or djgpp and thus the binary comes under conditions in the GNU 
+General Public License.  Note that this version will more than likely 
+crash a 286 or lesser machine.  
+Also note that you need to have go32.exe in your path to use this
+binary.  A copy of go32.exe is provided in the GNU directory along with
+the COPYING information provided with DJGPP
+
+Recompiling the binaries:
+In the src directory type make. This will list the options available.
+make pcc286 compiles the 286 version with pcc compiler
+make unix for the unix version
+make gcc386 for the 386+ dos version compiled with djgpp (gcc for ibm)
+
+If you have another compiler, I imagine it shouldn't be to difficult to get
+it working.  You may need to define a few things, such as DOS_MACHINE
+See UNIX installation for little more detail.
+
+I'd be interested in makefiles for any other compilers, though they should
+use command lines to define flags rather than editing the source.
+
+It has been noted that u_char's give some problems.  If your system complains
+it does not know what they are, make sure that the typedef for it is commented
+out in types.h.  Likewise if it complains it doesn't know what it is.
+
+** UNIX installation
+
+Copy the file Makefile.uni to Makefile and type make
+Depending om your exact machine, you may need to define certain things
+
+EQBUG: If your system complains that it does NOT know about functions like
+       strncasecmp() then define this.
+

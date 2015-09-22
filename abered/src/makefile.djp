@@ -1,0 +1,50 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                Make file for IBM 80386+ version of abered                   #
+#           Copyright (C) 1993 James Willie. All rights reserved.             #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+HDR = types.h macros.h extern.h
+OBJ = abered.o loc_io.o utils.o loc.o io.o mob_io.o mob.o obj_io.o obj.o
+LIBOBJ = mlj_edit.o
+LIB = -lpc
+
+CC     = gcc
+CFLAGS = -Wall -O -DDOS_MACHINE -DANSI_C -DIBM_MLJ_EDIT
+
+abered: $(OBJ) $(LIBOBJ)
+	$(CC) $(CFLAGS) $(OBJ) $(LIBOBJ) -o abered  $(LIB)
+	coff2exe abered
+
+clean:
+	del *.o
+	del abered
+	del abered.exe
+
+abered.o: abered.c $(HDR) verbs.h
+	$(CC) $(CFLAGS) -c abered.c 
+
+utils.o: utils.c $(HDR)
+	$(CC) $(CFLAGS) -c utils.c 
+
+obj.o: obj.c $(HDR) 
+	$(CC) $(CFLAGS) -c obj.c 
+
+loc.o: loc.c $(HDR) 
+	$(CC) $(CFLAGS) -c loc.c 
+
+mob.o: mob.c $(HDR)
+	$(CC) $(CFLAGS) -c mob.c 
+
+# I/O files 
+
+io.o: io.c $(HDR) 
+	$(CC) $(CFLAGS) -c io.c 
+
+loc_io.o: loc_io.c $(HDR)
+	$(CC) $(CFLAGS) -c loc_io.c 
+
+obj_io.o: obj_io.c $(HDR)
+	$(CC) $(CFLAGS) -c obj_io.c 
+
+mob_io.o: mob_io.c $(HDR)
+	$(CC) $(CFLAGS) -c mob_io.c

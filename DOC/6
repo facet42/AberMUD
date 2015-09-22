@@ -1,0 +1,230 @@
+.SH Basic Creation
+.LP
+Having had a quick look at what floats around the AberMUD game universe, it
+is now time to have a look at how you get it there in the first place.
+.LP
+Words are added and deleted with two sets of commands. The first add<type>
+eg addverb, adds a word to the game vocabulary. The second del<type> removes
+a word from the vocabulary.
+.LP
+.I Addverb <text> <value>
+.LP
+Adds a verb to the games vocabulary. As with all sorts of words two
+words of the same value and type are synonyms. Verbs with value below 200 are 
+system verbs - for example addverb itself. If you miss out the value the game
+will pick a suitable unused one.
+.LP
+.I Addordinate <text> <value>
+.LP
+Add an ordinate (n'th) word - such as 1st , 2nd etc. For ordinates the
+value parameter is the degree of the ordinate - thus 1st is 1, 2nd is 2 and so
+on.
+.LP
+.I Addpreposition <text> <value>
+.LP
+Add a preposition (joining word) to the game database. With these words
+the value is used to indicate synonyms. If no value is given an unused one is
+selected.
+.LP
+.I Addadjective <text> <value>
+.LP
+Add an adjective to the game system. Adjectives are primarily used to
+specify items more precisely. The value is used to determine synonyms only. If
+no value is given then an unused one is selected.
+.LP
+.I Addnoun <text> <value>
+.LP
+Add a noun to the game system. Nouns are primarily used to associate
+words with items in the game. The value is used to determine synonyms. Values of
+10000 or higher are reserved for use by the game system internally. If no value
+is given a suitable one is selected.
+.LP
+The game uses words 10000+ to add words itself when a player enters the
+game.
+.LP
+.I Addpronoun <text> <value>
+.LP
+Add a pronoun to the game system. The value for pronouns is used to
+indicate the behaviour of the pronoun. While the behaviours available are
+sufficient for English, if occasionally wrong in application, they may well
+not be sufficient for foreign language games. The behaviours are:-
+.IP 1 5
+Me
+.IP 2
+It
+.IP 3
+Them
+.IP 4
+Him
+.IP 5
+Her
+.IP 6
+There
+.SP 2
+.LP
+.I Delverb <text>
+.br
+.I Delnoun <text>
+.br
+.I Deladjective <text>
+.br
+.I Delprep <text>
+.br
+.I Delpronoun <text>
+.br
+.I Delordinate <text>
+.LP
+Delete a word from the game database. If the word is in use you will
+not be warned and items using that word will report <UNSET> for its text. It
+is generally a bad idea to remove a word that is in use. It is possible to
+do delverb addverb. I wouldn't recommend it.....
+.SP 2
+.SH Miscellaneous Commands
+.IP abort 20
+Aborts the game driver, anything you are editing is lost.
+.IP "saveuniverse <name>" 20
+Save the game to the given name. The previous copy is backed
+up as <name>.bak in case the save fails and is incomplete.
+.IP users 20
+See who is connected to the game.
+.IP status 20
+Get a status summary.
+.IP statme 20
+See memory status (only if using dlibs fast malloc).
+.IP quit 20
+Leave the game.
+.LP
+Normally the game database will override these for players. An archwizard however
+can always type a : at the start of the line to force it to use only the system 
+words. This is vital in case you redefine everything by mistake!
+.SP 2
+.SH Items
+.LP
+Once you have added adjectives and nouns, it is then possible to create
+an item using them. When you create an item it acquires an adjective and a noun.
+The game system fills in the other properties of the item to suitable initial
+defaults. The properties of a basic item are:
+.LP
+.IP Property 20
+Set With		
+.br
+.br
+.IP Adjective 20
+rename <adj> <no> {to} <adj> <no>
+.IP Noun 20
+rename <adj> <no> {to} <adj> <no>
+.IP Name 20
+setname <adj> <no> text
+.IP Parent 20
+place <item> {at} <item>
+.IP Next 20
+place <item> {at} <item>
+.IP Child 20
+place <item> {at} <item>
+.IP State 20
+setstate <item> <0-3>
+.IP Perception 20
+setperception <item> <value>
+.IP Lock 20
+Not directly alterable
+.IP Actor 20
+setactor <item> <tablename>
+.IP Action 20
+setaction <item> <tablename>
+.IP Classes 20
+bexxxx
+.IP ClassFlags 20
+setclass <item> <class>
+.IP Superclass 20
+setsuper
+.LP
+The important properties here are the adjective and noun which govern what words
+match the item. It is a very good idea to make the name match the vocabulary.
+For normal items use lower case for the name - eg 'the small axe'. The system
+knows the basic rules for capitalising names and also provides actions for
+doing so.
+.LP
+The Parent, Child and Next fields are maintained by the system as objects move
+around. They control and describe the location of each item. You can place
+an item where you like with place <item> <location>. If you have several identical
+items even down to the adjective and noun, the system provides a syntax that
+can be used with the game editing commands such as place. Each identical item
+is #1 adj noun , #2 adj noun etc. #1 is always the most recently created. This
+is for convenience. Most people find that knowing the most recent are #1 and #2
+is easier to work with.
+.LP
+The state of an item is a value that can be changed as properties of an item 
+change. It is used in several places by the system. In paticular light sources
+are normally lit in state 0. A door is open in state 0 , closed in state 1 and
+locked in state 2. A container is closed in state 1. You can arbitarily set 
+this using setstate. setstate is slightly special in some ways, and this will
+be explained later (section 10) when we discuss chaining.
+.LP
+The perception is the minimum level required to be able to see or refer to
+an item. It allows you to implement invisible things, and also to hide
+system objects from users.
+.LP
+The Lock value is the number of references to this item. While this item is
+referred to or has contents it cannot be destroyed. 
+.LP
+Actor is the name of the list of database instructions that will be executed when
+a command is entered by a user. This is normally 0.
+Action is the name of the list used when an item is sent a message by another item.
+For players this defaults to 2.
+.LP
+Classes is a list of things an item can be - this includes Room, Player, Object, 
+and Container - which we will deal with later on.
+.LP
+Superclass is used for object based inheritance. Basically when a user types a command
+like 'get axe' the system first looks at the axe to see if it has a get rule. If it does
+not it looks at its superclass and sees if that has a get rule and so on until there is
+not a superclass. If it still hasn't found a rule it will try the actor table of the user.
+Finally it will give up and display 'I don't understand.'.
+The superclassing is controlled with the commands
+.IP "setsuper <item> <superclass>" 30
+Set the superclass of an item. Setting it to itself clears
+the superclass
+.IP "showsuper <item>" 30
+Shows the full inheritance heirarchy of an item -eg
+big axe -> generic-axe -> generic-sharp-weapon -> weapon
+.LP
+ClassFlags confusingly enough has nothing to do with the classes like Room, Player. It is
+a set of user definable flags that can be set on an item - for example to indicate if it
+is magical. These flags are controlled with the following commands.
+.SP 1
+.IP listclass 25
+List the classes available.
+.IP "nameclass <num> <name>" 25
+Name a class.
+.IP "setclass <item> <class>" 25
+Make an item a member of a class.
+.IP "unsetclass <item> <class>" 25
+Make an item not a member of a class.
+.SP
+.LP
+To create an item you type 'create adjective noun'. This will create a new
+item. The properties are defaulted as follows.
+.IP Parent: 16
+NULL (nowhere)
+.IP Name: 16
+the <adjective> <noun>
+.IP State: 16
+0
+.IP Action: 16
+0
+.IP Actor: 16
+0
+.IP Classes: 16
+None
+.IP SuperClass: 16
+None
+.LP
+Having created an item you don't want, you will need to delete it. The system only allows
+you to delete an item that is not in use. An item is in use if it is a player, if it has
+contents, if it has a type - such as Object, Room etc, if an exit leads to it, or if it
+is referred to anywhere else in the database. The Locks count will show you the number of
+times an item is in use. To perform the deletion you type
+.LP
+.I delete <itemname>
+.LP
+If the item is in use you will be told so, and it will not be deleted.

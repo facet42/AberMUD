@@ -1,0 +1,13 @@
+
+AberMUD 5.20.0 / The New World            Aber Information System Main Menu
+--*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*--  --*-- 
+Subject List
+
+AberMUD Information is available by typing INFO followed by the keyword for
+the information you are seeking.  BEGINNERS, try typing: INFO BASICS
+
+	MOVING   Moving Around             GAME    About the game system
+        TALKING  Talking to others         OBJECT  What should I do?
+        EMOTIONS Interacting with others   MAGIC   Casting Spells
+                                           SPELLS  List of Game Spells
+

@@ -1,0 +1,15 @@
+    These general commands behave much as you would expect. Similar to how
+they do in the mud. However some restrictions don't exist. eg, there is no
+reason why you can't give a mobile an object just because you don't have it.
+If the object can be found it will work. This doesn't always apply.
+    Some commands take all as an argument, like drop all. This causes all
+the objects you currently carry to be dropped in the room your in. The editor
+defines an object as being carried by you, if it can't figure out where it
+should be. eg location type UNKNOWN
+    Inventory will list what you carry. The format to some commands are
+
+GIVE <obj> <mob>
+PUT <obj> [DOWN | IN] [obj] (IN need not be specified)
+GET <obj>
+DROP <obj>  (drop all)
+

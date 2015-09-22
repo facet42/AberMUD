@@ -1,0 +1,123 @@
+.SH Installation And Operation
+.br
+.LP
+The AberMUD5 system is distributed in source form. The normal distribution is
+a distribution of source code, documentation and initial game universe. To
+install AberMUD you should unpack the distribution archive with tar. 
+Having unpacked the system you will have three subdirectories called:-
+.SP 1
+.IP 'DOC' 25
+Documentation
+.IP 'SOURCE' 25
+System source code
+.IP 'UNIVERSE' 25
+Supplied game universe
+.SP 1
+.LP
+Go into the SOURCE directory and edit the file 'System.h'. This contains
+the configuration parameters that are hard coded into the game
+.LP
+.B Options
+.LP
+.IP ANSI_C 25
+You can set this if you are using an ANSI compiler.
+.IP NO_VOID 25
+Your compiler doesn't know what 'void' means.
+.IP LOG_FILE 25
+This defines the name of the file used by both
+the system and database logging functions
+.IP SECURE 25
+This option restricts some database actions like
+writing to arbitary filenames. It's for the really
+paranoid.
+.IP UNIX 25
+Indicate you are compiling for Unix
+.IP MAXUSER 25
+Maximum number of simultaneous players to allow. This
+value is limited by the number of file descriptors
+available. On a SUN for example this can be about 250.
+.IP MAXNAME 25
+The longest length of a name a player is allowed.
+.IP MAXUSERID 25
+The maximum length of a userid. Note the comments here -
+unless you are porting to a system with usernames
+longer than 32 letters don't alter this.
+.IP PANSY_MODE 25
+The game doesn't delete people when they die off. 
+Instead it halves their score and sets their strength
+quite low. Some people, especially in the US, prefer
+this option.
+.IP REGISTER 25
+Ask and log users email addresses. You can alter 
+the database to force registration should you 
+desire that degree of security.
+.IP TCP_PORT 25
+The default port used for connections. The next two
+ports after this are also used for client and BSX
+links respectively.
+.IP USERFILE 25
+The file where users are recorded. 
+.I IMPORTANT: 
+The passwords used by AberMUD are not
+crypted. This file should be protected.
+.IP BOSS1..BOSS5 25
+Set these to the names of characters you wish to
+be able to use the system as a game controller. You
+should be very careful with this. The first letter
+must be capital and the rest lower case.
+.SP 1
+.LP
+Next check the Makefile is OK for your system. You may have to change the
+definition of CC in paticular. On SYS5 machines you will probably need to
+add networking libraries. The distributed Makefile is correct for Linux.
+.LP
+Check the ValidLogin.c code. This is a module designed to be user 
+customised to suit your own preferences on login control and maximum
+user limits. As supplied it permits 20 users between 11pm and 7am,
+12 users between 7am and 9pm, 12 from 9pm to 10pm and 16 from 10pm to 11pm.
+.LP
+When you have got all this right, you can just type 'make' and eventually
+you should end up with a set of compiled programs as follows:-
+.SP 1
+.IP server 25
+The game driver. This runs games
+.IP Run_Aber 25
+A boot strap program. It disconnects from the terminal when
+run, and reboots AberMUD whenever it finishes.
+.IP FindPW 25
+This program can be used to obtain a players password.
+.IP Reg 25
+Reg <name> registers a person.
+.SP 1
+.LP
+AberMUD5 is normally run using the Run_Aber program. This starts up the
+server in the background, and should it crash or reset will restart a new
+server to replace it. The standard AberMUD reset mechanism is implemented
+in this manner by resetting the server itself every game reset. 
+The Run_Aber program runs the server with the arguments it is supplied with.
+Thus the arguments to Run_Aber are the same as the arguments to the server
+itself.
+.LP
+The server is a single large program which implements the communications,
+interpretation and editing of the game world. It is started with a command
+line of the form ' server <databasename> '. It begins by loading the 
+supplied universe file into memory then creates its network connections
+and commences execution. You can select the range of ports used by the
+program by doing 'server -p <portnum> <databasename>'. This is commonly
+used when you want a seperate game copy for editing and testing. The
+game operates on three ports. The first services normal telnet connections,
+as well as links to the standard mud clients. The second port uses a 
+special protocol used by AberMUD5, and also now DickMUD, to permit lines
+to be uploaded and downloaded for local editting. An example client for
+this protocol is available. The third port runs Bram Stolk's BSX protocol,
+a crude but workable graphics protocol based on polygon downloads. To use
+the BSX facilities you will want the BSXmud client from lysator.liu.se.
+You may also want Muddraw should you wish to do graphical game editing.
+.LP
+The other programs FindPW and Reg are small utilities that allow you
+to manage the user file. They provide the ability to query a users 
+password, and to mark a user as registered, if the
+.I REGISTRATION
+option has been defined. This option is still under test and may or may not
+work correctly.
+

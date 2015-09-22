@@ -1,0 +1,1287 @@
+.SH Appendix A: Interpreter Reference
+.LP
+.SP 2
+This is a complete reference of the database conditions and actions. It lists
+each action along with its arguments, effect, and failure modes. The argument
+types are
+.LP
+.IP Table 16
+The name or number of another database table.
+.IP Item 16
+An item argument takes the value of any item within the game, or of $1 or $2,
+which are used to indicate the items the player is referring to. Note that
+some actions change $1 or $2. Actions that do this are clearly marked. In addition
+to these the values $ME the current player, $AC the initiator of any current daemon
+driven action, and $RM the location of the current player are available for use.
+.IP Number 16
+The action takes a numeric argument. Numbers are ranged from -29999 up to 29999,
+or the name of a flag may be used to indicate the value held within that flag
+is to be used.
+IP Flag 16
+The action takes an argument which is the number or name of a flag within the
+game system. Using the Fn syntax here will generate a reference to a flag of a flag,
+that is the value of the flag whose number is held in flag n.
+.IP Text 16
+The action takes a text string delimited by the characters '{' and '}'. Two special
+strings are available: {$} and {$2} corresponding to the user input after the verb, and the user
+input after the first noun respectively.
+.IP Word 16
+The action takes a word as an argument. When a paticular type of word is required it will be
+listed as
+.I verb, adjective
+or
+.I noun.
+.IP Class 16
+The action takes a class as an argument. The classes used are the class flags which each item
+posesses and are altered with setclass and unsetclass. The value 0 is also legal and means all
+items.
+.IP ItemVal 16
+The action takes a value of 1 or 2 as its argument and will load either $1 or $2 with some value
+as a result of its actions.
+.IP ClassFlag 16
+One of pflag, oflag, cflag, rflag. This is used to indicate a class dependant flag name.
+.SP
+.SH Interpreter Action List
+.SP
+.I AT <item>
+.LP
+This action is true if the current player is directly contained in the item specified.
+.LP
+.I NOTAT <item>
+.LP
+This action is true if the current player is not directly contained in the specified item.
+.LP
+.I PRESENT <item>
+.LP
+This is true if the item in question is directly carried (ie directly contained in) the current
+player, or is in the same place as the current player. In other words if the item is handy.
+.LP
+.I ABSENT <item>
+.LP
+The reverse of the present condition.
+.LP
+.I WORN <item>
+.LP
+This is true if the current player is wearing the item in question. For this to be true the
+item must be directly contained within the player and have its worn oflag set. Non objects
+can never be worn.
+.LP
+.I NOTWORN <item>
+.LP
+The reverse of the WORN condition.
+.LP
+.I CARRIED <item>
+.LP
+True if the item is directly contained within the current player. Items that are worn are also
+counted as carried.
+.LP
+.I NOTCARR <item>
+.LP
+The reverse of the carried action.
+.LP
+.I ISAT <item1> <item2>
+.LP
+This is true if item1 is directly contained within item2. All of the here/present/carried actions
+can be written using this but are provided seperately for readability and memory saving.
+.LP
+.I ISNOTAT <item1> <item2>
+.LP
+The reverse of the isat action.
+.LP
+.I ISBY <item1> <item2>
+.LP
+True if item1 and item2 both share the same location. Two items that are both nowhere do not share
+the same location even though they are effectively in the same place.
+.LP
+.I ISNOTBY <item1> <item2>
+.LP
+The reverse of the isby condition.
+.LP
+.I ZERO <flag>
+.LP
+True if flag has a value of zero. 
+.LP
+.I NOTZERO <flag>
+.LP
+True if flag has a non-zero value.
+.LP
+.I EQ <flag> <number>
+.LP
+True if flag contains the value number.
+.LP
+.I NOTEQ <flag> <number>
+.LP
+True if flag does not contain the value nunber.
+.LP
+.I GT <flag> <number>
+.LP
+True if flag contains a value greater than number.
+.LP
+.I LT <flag> <number>
+.LP
+True if flag contains a value less than number.
+.LP
+.I EQF <flag1> <flag2>
+.LP
+True if flag1 and flag2 contain the same value.
+.LP
+.I NOTEQF <flag1> <flag2>
+.LP
+True if flag1 and flag2 contain different values.
+.LP
+.I LTF <flag1> <flag2>
+.LP
+True if flag1 contains a smaller value than flag2.
+.LP
+.I GTF <flag1> <flag2>
+.LP
+True if flag1 contains a larger value than flag2.
+.LP
+.I ISIN <item1> <item2>
+.LP
+True if item1 is contained in item2 to any depth. That is unlike the ISAT function this
+function is true even if there are layers of containers within item2 that contain item1.
+.LP
+.I ISNOTIN <item1> <item2>
+.LP
+The reverse of the isin action.
+.LP
+.I ADJ1 <adjective>
+.LP
+True if the first user entered adjective is the given word or a synonym
+.LP
+.I ADJ2 <adjective>
+.LP
+True if the second user entered adjective is the given word or a synonym
+.LP
+.I NOUN1 <noun>
+.LP
+True if the first user entered noun is the given word or a synonym
+.LP
+.I NOUN2 <noun>
+.LP
+True if the second user entered noun is the given word or a synonym
+.LP
+.I PREP <preposition>
+.LP
+True if the user entered preposition is the given word or a synonym
+.LP
+.I CHANCE <number>
+.LP
+This action has a number in 100 (ie a percentage) chance of being true.
+.LP
+.I ISPLAYER <item>
+.LP
+True if the item has player properties.
+.LP
+.I ISUSER <item>
+.LP
+True if the item is a user of the game rather than just a game driven object.
+.LP
+.I ISROOM <item>
+.LP
+True if the item has room properties
+.LP
+.I ISOBECT <item>
+.LP
+True if the item has object properties
+.LP
+.I STATE <item> <number>
+.LP
+True if the item in question is in state number. States range from 0-3. While it 
+is possible to test against a higher value it is pointless.
+.LP
+.I PFLAG <item> <pflag>
+.LP
+True if the item has this player flag set. Non players are assumed to always have
+this clear.
+.LP
+.I OFLAG <item> <oflag>
+.LP
+True if the item has this object flag set. Non objects are assumed to always have this
+clear.
+.LP
+.I CANPUTIN <item1> <item2>
+.LP
+Checks to see if item1 can be placed in item2. It checks to see that container sizes are
+not breached and that player carrying limits are enforced. The assumption is made that either
+item1 contains item2 or vice versa. In other cases because this action evaluates more simply
+than is ideal - for speed - it may allow a container to become over 100% full when another
+soft container is within it and an item is placed into the soft container from outside of
+either container.
+.LP
+.I RFLAG <item> <rflag>
+.LP
+True if item has the room flag specified set. Non rooms have all these flags assumed to be zero.
+.LP
+.I LEVEL <number>
+.LP
+True if the level property of the current player is at least number. Non players have a level of
+zero.
+.LP
+.I IFDEAF
+.LP
+True if the player is deaf. This is directly equivalent to testing the deaf flag with PFLAG.
+.LP
+.I IFBLIND
+.LP
+True if the player is blind.
+.LP
+.I ARCH
+.LP
+True if the name of the player matches one of the compiled in archwizard names. Remember that
+the editing commands are tied to the name, and thus allowing people to set the name is a bad
+idea.
+.LP
+.I GET <item>
+.LP
+This is one of a small set of actions that perform quite a complex task for user convenience. If
+you want to tailor the behaviour of your get verb you may well opt not to use this function. The
+get action checks that the item may be taken and if so takes the item and informs those present
+what has occured. If the item cannot be taken and a doclass is not in force an error is sent to
+the player. The things checked are: that the item fits in the player, that it has canget set,
+and that it is an object.
+.LP
+.I DROP <item>
+.LP
+Drop an item. The item must be carried by the player. It is placed in the location of the player
+and anyone in that location informed as appopriate. If the item is not carried by the player a
+suitable message is displayed.
+.LP
+.I REMOVE <item>
+.LP
+Remove an item the player is currently wearing. If the item is not being worn by the player
+a suitable error message is displayed. If the item can be removed a message is sent to people
+present informing them of the event.
+.I WEAR <item>
+.LP
+Sets an item that the player is carrying to be worn. For this to be done the item must have its
+canwear flag set and be an object. A message is displayed to people present informing them of the
+action. If the item cannot be worn an error is displayed.
+.LP
+.I CREATE <item>
+.LP
+The item is moved to the location containing the player. No messages are displayed. No checks
+are made to see if the item will fit in its new location.
+.LP
+.I DESTROY <item>
+.LP
+The item in question is moved to the void. If the item was a temporary clone and has no other
+references it will be physically destroyed and removed from the system. The destroyed flag is
+also set for backwards compatibility.
+.LP
+.I PUTO <item>
+.LP
+Obsolete call.
+.LP
+.I SWAP <item1> <item2>
+.LP
+Swaps over the location of item1 and item2. No checks on whether the item will fit are made.
+.LP
+.I PLACE <item1> <item2>
+.LP
+Item1 is placed directly into item2. No checks are made.
+.LP
+.I PUTIN <item1> <item2>
+.LP
+If possible item1 is placed inside item2 and everyone viewing the event is informed. If item2
+is not a container, item2 does not have the canputin flag set, item2 is not closed, item1 
+will not fit inside item2 or both item1 and item2 are not present the player receives an
+explanatory error message.
+.LP
+.I TAKEOUT <item1> <item2>
+.LP
+Providing item1 is inside of item2, item2 is present and item1 can be taken (has canget set
+and can be carried by the player), it will be moved to the player and people observing the
+event will be informed. If it cannot be accomplished a suitable explanation will be displayed
+for the player.
+.LP
+.I COPYOF <item> <number> <flag>
+.LP
+Extract user flag number from item and store its value in flag. If this flag has not yet been
+used it will return 0. Number can be from 0-15.
+.LP
+.I COPYFO <flag> <item> <number>
+.LP
+Copy the value of flag into user flag number of item. If neccessary the user flag properties will
+be created for the item. Number ranges from 0-15.
+.LP
+.I COPYFF <flag1> <flag2>
+.LP
+The value in flag1 is placed into flag2.
+.LP
+.I WHATO <number>
+.LP
+Number may be 1 or 2 indicating either the first or second adjective noun pair of the input. This
+action will scan globally for an item matching the adjective noun pair and store it as $1 or $2 
+as is appropriate.
+.LP
+.I GETO <number> <item>
+.LP
+This works the same way as whato, but looks only at the contents of a specified item. Many verbs
+look in specific places for their matching items - for example 'take item1 from item2'. This
+function is intended to help process them.
+.LP
+.I WEIGH <item> <flag>
+.LP
+Calculate the total weight of item and its contents and store its result in flag.
+.LP
+.I SET <flag>
+.LP
+Set the value of flag to 255.
+.LP
+.I CLEAR <flag>
+.LP
+Set the value of flag to 0.
+.LP
+.I PSET <item> <pflag>
+.LP
+Set player flag pflag of item. This function has no effect on non player class objects.
+.LP
+.I PCLEAR <item> <pflag>
+.LP
+Clears player flag pflag of item. This function has no effect on non player class objects.
+.LP
+.I LET <flag> <number>
+.LP
+Set the value of flag to be number.
+.LP
+.I ADD <flag> <number>
+.LP
+Add number to the value of flag and store the result back in flag. As with all the maths
+functions no range checking is performed.
+.LP
+.I SUB <flag> <number>
+.LP
+Subtract number from the value in flag and store the result back in flag.
+.LP
+.I ADDF <flag1> <flag2>
+.LP
+Add the value in flag1 to the value in flag2 and store the result back in flag1.
+.LP
+.I SUBF <flag1> <flag2>
+.LP
+Subtract the value in flag2 from the value in flag1 and store the result back in flag1.
+.LP
+.I MUL <flag> <number>
+.LP
+Multiplies the value of flag by number and stores the result back in flag.
+.LP
+.I DIV <flag> <number>
+.LP
+Divides the value of flag by number. If you attempt a division by zero the message
+'Division by Zero!' is sent to the player and logged in the system log.
+.LP
+.I MULF <flag1> <flag2>
+.LP
+The contents of flag1 are multiplied by the contents of flag2 and the result is stored
+in flag1.
+.LP
+.I DIVF <flag> <number>
+.LP
+Divides the value of flag1 by the value of flag2. If you attempt a division by zero the message
+'Division by Zero!' is sent to the player and logged in the system log.
+.LP
+.I MOD <flag> <number>
+.LP
+Divides the value of flag by number and stores the remainder in flag. A divison by zero causes
+an error message to be displayed to the user and logged.
+.LP
+.I MODF <flag1> <flag2>
+.LP
+Divides the value of flag by number and stores the remainder in flag. A divison by zero causes
+an error message to be displayed to the user and logged.
+.LP
+.I RANDOM <flag> <number>
+.LP
+A random value between 0 and number-1 is stored in flag. Specifying a value of 0 is not permitted
+and causes an error message.
+.LP
+.I MOVE <flag>
+.LP
+Takes the value of flag and attempts to move in that direction. The directions match the verb number
+- 100. Move understands exits, conditional exits, message exits, doors, how to describe doors in
+the dark, what will fit where and how to describe the location if a move succeeds. If the move is
+not possible a suitable explanation is given. The values are
+.IP 0 5
+North.
+.IP 1 5
+East.
+.IP 2 5
+South.
+.IP 3 5
+West.
+.IP 4 5
+Up.
+.IP 5 5
+Down.
+.IP 6 5
+NorthEast.
+.IP 7 5
+SouthEast.
+.IP 8 5
+NorthWest.
+.IP 9 5
+SouthWest.
+.IP 10 5
+In.
+.IP 11 5
+Out.
+.LP
+.I GOTO <item>
+.LP
+Move the player into item. No special checks are done. The location is not described upon arrival,
+although users in the original and new location of the player are informed of the movement. If you
+do not wish to inform anyone use PLACE $ME <item> instead.
+.LP
+.I WEIGHT <item> <number>
+.LP
+Set the weight of item to number. Either objects or players may have weights set. It has no effect
+on other types of item. No checking of maximum weights is done.
+.LP
+.I SIZE <item> <number>
+.LP
+Set the size of item to number. Either objects or players may have sizes set. It has no effect
+on other types of item. No checking of maximum weights is done.
+.LP
+.I OSET <item> <oflag>
+.LP
+Set an object flag on an item. If the item is not an object nothing happens.
+.LP
+.I OCLEAR <item> <oflag>
+.LP
+Clear an object flag on an item. If the item is not an object nothing happens.
+.LP
+.I RSET <item> <oflag>
+.LP
+Set an room flag on an item. If the item is not an room nothing happens.
+.LP
+.I RCLEAR <item> <oflag>
+.LP
+Clear an room flag on an item. If the item is not an room nothing happens.
+.LP
+.I PUTBY <item1> <item2>
+.LP
+Item1 is placed in the same location as item2. No messages are displayed and no size or
+weight checking is done.
+.LP
+.I INC <item1>
+.LP
+Increment (add 1 to) the state of an item. If the state is already 3 nothing happens. As
+with all database state changing actions (but not the driver setstate command), all the
+items chained also have their state set to the new state of item1.
+.LP
+.I DEC <item1>
+.LP
+Decrement (subtract 1 from) the state of an item. If the state is already 0 nothing happens.
+.LP
+.I SETSTATE <item> <number>
+.LP
+Set the state of item to number. If number is less than zero then zero is used, if it is higher than
+three then three is used.
+.LP
+.I PROMPT <text>
+.LP
+Set the input prompt of the current player to be the given text string. If the current player is not
+a user then nothing happens.
+.LP
+.I PRINT <flag>
+.LP
+Display the value of flag on the display of the current player. Unless the current player is a user
+nothing happens. This is true for all output functions.
+.LP
+.I SCORE
+.LP
+Display the players score in a simple format. This is for compatibility and now obsolete.
+.LP
+.I MESSAGE <text>
+.LP
+Output a text message on the current players screen (if any). A trailing newline is added.
+.LP
+.I MSG <text>
+.LP
+Output a text message on the current players screen (if any). A trailing newline is not added.
+.LP
+.I LISTOBJ <item>
+.LP
+Generate an output list of long descriptions of the contents of item in a short 'name,name and name.' 
+type format.
+.LP
+.I LISTAT <item>
+.LP
+Display a list of the contents of item in long form using the description for the object state,
+or the here text of a player. Each entry has a line of its own.
+.LP
+.I INVEN
+.LP
+Display the users inventory.
+.LP
+.I DESC
+.LP
+Describe the location of the current player including objects, and trapping out to the user control
+tables called during a room description.
+.LP
+.I END <text>
+.LP
+Display a message and remove the current player from the game. Using this on a non-user has no effect.
+This function must not be called inside of the room describe call out tables or the game entry 
+tables. Instead use 'WHEN 0 table-name' to queue up the end.
+.LP
+.I DONE
+.LP
+Terminate all further consideration of this action and return to the previous table, or if a doclass
+is in force move onto the next item.
+.LP
+.I NOTDONE
+.LP
+Indicate that the event has been processed but could not satisfactorily complete. Superclasses use this
+to force an event to be handled higher up. The description call out tables use this to indicate
+various things.
+.LP
+.I ABORT
+.LP
+Abort the game server instantly. All users are kicked off and the program exits without saving any
+game world changes.
+.LP
+.I SAVE
+.LP
+Store the current players persona to the user data file. If the save fails this action fails too.
+.LP
+.I PARSE <text>
+.LP
+Suspend current input processing and process text as if it had been input by the current player. After
+this has processed continue with the previous vocation. Try to avoid this function. In relative terms
+it is very very slow.
+.LP
+.I NEWTEXT
+.LP
+Flsuh all the pronouns.
+.LP
+.I PROCESS <table>
+.LP
+Suspend current processing and processes table. Once table is processed continue processing.
+.LP
+.I DOCLASS <item> <classflag> <itemval>
+.LP
+This action is used to scan for a set of things within item. If classflag is anything other than 0
+only the items with the given class flags are processed. When the action occurs either $1 or $2
+as appropriate is set to the first matching item (or nothing if no item matches) and the next
+statement then executed.
+.LP
+From then onwards each time a DONE occurs within that table processing resumes from the line
+.I after
+the line containing the DOCLASS action with $1 or $2 set to the next item matching.
+.LP
+There are two limits to DOCLASS. You cannot nest doclass requests within a table. Requests in
+different tables are fine. Thus if inside of a doclass you call a table that does a doclass
+no harm will occur. The second is that if the action inside of the doclass loop moves the next
+item in the list of contents of the room containing it to another location the DOCLASS loop will
+stop at that point without processing further items. This is an unusual situation and since avoiding
+this would cause a significant slow down it was felt best to leave it as it was.
+.LP
+.I GIVE <item1> <item2>
+.LP
+Give item1 which you must be carrying to player item2 who must be able to carry it. If the conditions
+are not true a suitable explanation is displayed, if it succeeds the relevant people are informed of
+the action.
+.LP
+.I SETUT <item> <number> <text>
+.LP
+Each item can have up to eight user text strings. This function sets string number to the message text.
+If it is called with an invalid number nothing happens.
+.LP
+.I DOESACTION <item> <message> <number>
+.LP
+Inform those present that item has performed an action. The way the action is reported, and who is informed
+is controlled by number which is a set of flags added together as follows.
+.LP
+.IP 1 4
+Report that 'Someone' carried out an action if they cannot be seen (for example it is dark). Without this flag
+set the action will just not be seen.
+.IP 2 4
+The item is noise based. Deaf people are not informed.
+.IP 4 4
+Only users who are present will be notified of the event.
+.LP
+This action although commonly used by players is very useful for inanimate objects too as it saves checking
+to see who is present and what they can see every time an event occurs. For things like a striking clock DOESACTION is
+ideal.
+.LP
+.I DOESTO <item> <message> <item2> <number>
+.LP
+This works in the same way as DOESACTION but the event is targetted at a second item. It supports an extra flag
+value of 8 which means report the event to the target (item2) even if item2 is not aware of the source, using 
+'Someone' or 'Something'.
+.LP
+.I DOESTOPLAYER <item> <message> <item2> <number>
+.LP
+Identical to DOESTO except that the output is formatted as <item> <message> <you> when it is reported to item2.
+.LP
+.LP
+.I POBJ <item> <number>
+.LP
+Display the object description for item in state number. It the item is not an object nothing happens. The current
+value of 'it' is updated to reflect this item.
+.LP
+.I PLOC <item> <number>
+.LP
+If number is zero the short description of room item is displayed, otherwise the long one is. If the item
+is not a room nothing happens.
+.LP
+.I PNAME <item>
+.LP
+If item is not invisible its name is displayed and the pronouns set to match it. If the item is invisible either
+someone or something is displayed.
+.LP
+.I PCNAME <item>
+.LP
+If item is not invisible its name is displayed with the first letter capitalized and the pronouns
+set to match it. If the item is invisible either Someone or Something is displayed.
+.LP
+.I DAEMON <item> <verb> <noun1> <noun2>
+.LP
+The daemon tables for item are invoked in scanning order with verbs and nouns set to the argument. For the duration
+of the daemon $1, $2 and the previous vocabulary and DOCLASS loops are saved. During the daemon executing $ME is
+set to item, and $AC to the $ME at the point of daemon invocation.
+.LP
+.I ALLDAEMON <verb> <noun> <noun>
+.LP
+As a daemon except that it is applied to all
+.I users
+on the game system. For speed reasons only user objects are processed.
+.LP
+.I HDAEMON <item> <verb> <noun> <noun>
+.LP
+As a daemon except that it is applied to all
+.I users
+that are in the same location as item.
+.LP
+.I WHEN <number> <table>
+.LP
+Cause table to be invoked in roughly number seconds with $ME set to the current $ME. If the item is totally
+destroyed (for example a user logging out) any pending WHEN actions are deleted. As WHEN actions are queued
+doing a WHEN 0 table does not mean now, but as soon as the machine looks at its list of pending jobs. This is
+whenever it has nothing to do or at least once every two seconds regardless.
+.LP
+.I SETNAME <item> <text>
+.LP
+Set the name of item to text. This does not affect the vocabulary of an item so it use it with caution. In addition
+an item whose text matches one of the archwizard names compiled into the server has the privileges and is that
+archwizard. Finally never use SETNAME on a user and save them, the save will save the _new_ name and may well destroy
+the old character.
+.LP
+.I DUP <item> <number> <itemval>
+.LP
+Item is copied and either $1 or $2 is assigned to it, depending upon itemval. If number is 0 the item will cease
+to exist next database save or when a DESTROY action is used upon it. If it is 1 the item is a permanent copy.
+.LP
+.I FROB
+.LP
+Obsolete.
+.LP
+.I POINTS <number>
+.LP
+The players score is increased (or if number is negative decreased) by the number of points indicated.
+.LP
+.I HURT <number>
+.LP
+The players strength is reduced by number points. If it falls below zero the player dies. Because this action can kill the
+same restrictions on its use apply as to END. Death can either totally delete the player or if PANSY_MODE was defined at
+server compile time halve their score. Nothing forces the use of HURT, so any other system can be handled by writing your
+own variant of HURT to handle these situations.
+.LP
+.I CURED <number>
+.LP
+The players strength is increased by number.
+.LP
+.I KILLOFF <text>
+.LP
+This action performs identically to the END function except that it totally destroys the character. It is ideal for
+things like zaps from on high. The restrictions on the use of END apply to this function.
+.LP
+.I AUTOVERB <verb>
+.LP
+When AUTOVERB is set the verb is automatically prepended to any user input that does not begin with a '*' character.
+This is ideal for things like converse mode. To cancel it use AUTOVERB NONE.
+.LP
+.I IF1
+.LP
+True if $1 references an item.
+.LP
+.I IF2
+.LP
+True if $2 references an item.
+.LP
+.I BUG <text>
+.LP
+Add a bug report to the system log.
+.LP
+.I TYPO <text>
+.LP
+Add a typo record to the system log.
+.LP
+.I NARG <flag> <number>
+.LP
+If number is 1 then flag is loaded with the numeric form of {$} otherwise it is loaded wit the numeric form of {$2}
+.LP
+.I ISME <item>
+.LP
+True if item is the current player (ie $ME).
+.LP
+.I BROADCAST <text> <number>
+.LP
+Broadcast a text message to everyone on the game. The number value is flags in the same form as DOESACTION. However all
+the formatting rules about Someone/Name do not apply as no names are added to the text message.
+.LP
+.I ISCALLED <item> <text>
+.LP
+True if the name of item exactly matches text. This is case dependant. It is of most use for coding things bound to a 
+players name. Remember that a player name has a leading capital.
+.LP
+.I IS <item1> <item2>
+.LP
+True if item1 is item2. This isn't as pointless as it sounds since items can of course be things like $AC, $ME , $1.
+.LP
+.I SETME <item>
+.LP
+Change the 'current' player - ie $ME - to be item.
+.LP
+.I PRONOUNS
+.LP
+Display the current pronouns.
+.LP
+.I CHANCELEV <number>
+.LP
+This condition has a number in 100 chance of being true for each level the player has. Non player items are always
+level 0.
+.LP
+.I EXITS <item>
+.LP
+Display the exits from item. Archwizards get more information than normal players, and are told where exits lead
+in full form, and the type of the exit.
+.LP
+.I PWCHANGE
+.LP
+This action can only be applied to a user and moves them into password changing mode. After the completion of tables
+this time the player will be able to change the password. The statements after the PWCHANGE are executed immediately
+not after the password changes.
+.LP
+.I SNOOP <item>
+.LP
+Begin snooping on an item, and seeing exactly what it does. This only works properly if you are snooping on another
+user.
+.LP
+.I UNSNOOP <number> <item>
+.LP
+If number is non-zero unsnoop everything this user is currently snooping on. Otherwise cease snooping on item.
+.LP
+.I GETUT <item> <number>
+.LP
+Items have up to eight user text strings. This function extracts string number from item and places it into {$}.
+.LP
+.I CAT <text1> <text2> <text3>
+.LP
+The three strings text1, text2, and text3 are concatenated and placed in {$}. The total length must be 512 bytes or less.
+.LP
+.I BECOME <text>
+.LP
+The current player is logged out and the user is placed back at the game login prompt.
+.LP
+.I ALIAS <item>
+.LP
+The player gains control over another item, and observes and controls everything it does. For the duration of the
+aliasing the item is truely the user, and the users old body just sits where it was without a controller. When the
+player is unaliased or the aliased item dies control returns to the old body. Aliases do not stack, aliasing when
+aliased and then unaliasing puts you back to the real original user.
+.LP
+.I UNALIAS
+.LP
+Cease being aliased and return to being the original user.
+.LP
+.I FIELD <number>
+.LP
+Move on to the next X position that is divisible by number. This enables you to lay out tabulated data.
+.LP
+.I NEEDFIELD <number>
+.LP
+Not supported.
+.LP
+.I UNVEIL <number>
+.LP
+This expects the {$} string to contain eight comma seperated hex numbers, which are computer against number
+which is a key. Writing a program that computes keys and hex numbers is left to the user. If the keys match
+then the user becomes the first defined archwizard. There are certain things that can be done with this
+which are well out of order, notably imbedding convenient access routes to a game database you intend to
+give away. If this bothers you, edit ActionCode.c , search for Act_Unveil(), and then replace the last
+line of the function "SetName(Me(),BOSS1)" with " SendItem(Me(),"No chance!\n")" and recompile. 
+.LP
+.I DEBUG <number>
+.LP
+Set the debugging level. Level 1 logs every line executed and level 2 logs statement by statement as the
+interpreter runs. Level 2 is only intended for debugging the game server. 
+.LP
+.I GETSCORE <item> <flag>
+.LP
+Copy the score of a player item into flag.
+.LP
+.I GETSTR <item> <flag>
+.LP
+Copy the strength of a player item into flag.
+.LP
+.I GETLEV <item> <flag>
+.LP
+Copy the level of a player item into flag.
+.LP
+,I SETSCORE <item> <flag>
+.LP
+Set the score of a player item to the value of flag.
+.LP
+.I SETLEV <item> <flag>
+.LP
+Set the level of a player item to the value of flag.
+.LP
+.I SETSTR <item> <flag>
+.LP
+Set the strength of a player item to the value of flag.
+.LP
+.I SHELL <text>
+.LP
+The shell function is very powerful but very dangerous. Therefore unless
+you alter the code all that you can do is use the shell commands cat
+and date, which are actually emulated by inbuilt database functions.
+.LP
+.I CSET <item> <cflag>
+.LP
+Set a container flag on a container item. This has no effect on items that
+do not have the container class.
+.LP
+.I CCLEAR <item> <cflag>
+.LP
+Clear a container flag on a container item. This has no effect on items that
+do not have the container class.
+.LP
+.I CFLAG <item> <cflag>
+.LP
+True if a container item has this container flag set. Non container items never
+have any container flags set.
+.LP
+.I CANSEE <item>
+.LP
+True if the current player can perceive item after due consideration of darkness
+blindness and invisibility rules.
+.LP
+.I RESCAN
+.LP
+Scan the current table again from the top. This can cause the game to lock up if
+it loops for ever. If this happens and you want to save the database use the
+unix kill command to send the server process a SIGFPE, and as part of its crash
+procedure it will save the current game world as 'gonebang.uni' if possible.
+.LP
+.I MEANS <verb> <noun> <noun> <number>
+.LP
+This sets new verb and noun words for the current input. It does not however alter
+$1 or $2. Number is obsolete and should be set to 0.
+.LP
+.I TREEDAEMON <item> <verb> <noun> <noun>
+.LP
+Caue a DAEMON action (see above) to occur to any user who is contained within or
+is in fact item. They need not be contained directly.
+.LP
+.I SETIN <text>
+.LP
+Set the message displayed when the current item enters a location.
+.LP
+.I SETOUT <text>
+.LP
+Set the message displayed when the current item leaves a location.
+.LP
+.I SETHERE <text>
+.LP
+Set the message displayed when the current item is seen within a location description.
+.LP
+.I CANGOTO <item> <flag>
+.LP
+Tests to see if it is possible for the current item to move to item. If it is possible (ie there is an exit
+from the current location), then flag is loaded with the direction number for MOVE.
+.LP
+.I MOBILES
+.LP
+Obsolete.
+.LP
+.I DIR
+.LP
+Obsolete.
+.LP
+.I ROOMS
+.LP
+Obsolete.
+.LP
+.I CHAINDAEMON <item> <verb> <noun1> <noun2>
+.LP
+Perform a DAEMON action (see above) on each item which is chained (with the chain class and command) to this item.
+.LP
+.I CANGOBY <item> <flag>
+.LP
+As CANGOTO except that this action searches for a move which places you in the same location as item.
+.LP
+.I SETIFLAG <item1> <number> <item2>
+.LP
+Each item can have up to eight item flags each remembering another item. The SETIFLAG action sets flag number of item1
+to contain item2. If number is out of range nothing happens.
+.LP
+.I GETIFLAG <item> <number> <itemval>
+.LP
+Loads either $1 or $2 with flag number of item. Remember that item flags may be blank in which case $1 or $2 will be set
+to no item. You should test the result of this action with IF1 or IF2 before using it.
+.LP
+.I CLEARIFLAG <item> <number>
+.LP
+Set item flag number of item to indicate no item at all.
+.LP
+.I WHERETO <item> <number> <itemval>
+.LP
+This action looks up the exits from item and selects exit number (see MOVE for a list). If this is a valid exit then $1 or $2
+is set to be the location you reach by heading in that direction. If there is no exit $1 or $2 is set to no item.
+.LP
+.I DOOREXIT <item1> <item2> <flag>
+.LP
+Scans through all the exits from item1 looking for one which leads via door item2. The direction of this is stored in flag.
+If one does not exist the flag is set to 255. This action is ideal for handling commands like 'go through the big door'.
+.LP
+.I CLASSAT <item> <class>
+.LP
+This condition is true if at least one of items direct contents is a member of class.
+.LP
+.I DUPOF <item1> <item2>
+.LP
+True if item1 is a duplicate of item2 that was created by the DUP action. Only temporary duplicates remember this information.
+.LP
+.I MASTEROF <item> <itemval>
+.LP
+This sets $1 or $2 to be the thing that item is duplicated from with DUP. If it was not duplicated in this way the value
+is set to no item.
+.LP
+.I COMMENT <text>
+.LP
+A comment in the database. The comment is ignored at run time.
+.LP
+.I COMVOCAB <verb> <adjective> <noun> <pronoun> <adjective> <noun>
+.LP
+Change the input that is being processed to match the supplied set of words.
+.LP
+.I COMMAND <verb> <item1> <pronoun> <item2>
+.LP
+Change the input that is being processed to match the given words and items.
+The adjective noun pairs are taken from the items.
+.LP
+.I BSXSCENE <text>
+.LP
+Display the requested BSX scene. The scene must be present in the table of
+BSX images known to the game system.
+.LP
+.I BSXOBJECT <number1> <number2> <text>
+.LP
+Add a BSX object to the current scene. The object must be present in the
+table of known BSX images. Number1 is the position and number2 is the
+depth of the image. Note that object support in the AberMUD 5.23 BSX is
+not yet complete. 
+.I 5.21.4
+and above: A position of -1 means remove this object from the scene.
+.LP
+.I NOT
+.LP
+Invert the logic of the following condition. Using not before an action makes
+it always fail (since an action always succeeds).
+.LP
+.I IFDARK
+.LP
+True if the current location is dark after all light source rules have been
+computed.
+.LP
+.I VISIBILITY <item> <number>
+.LP
+Change the visibility of item to be number. The number is the minimum level
+to be able to perceive the item.
+.LP
+.I GETPARENT <item> <itemval>
+.LP
+Load either $1 or $2 with the thing containing item. If it has no location
+(it is in the void) then $1 or $2 is set to no item.
+.LP
+.I GETNEXT <item> <itemval>
+.LP
+Set $1 or $2 to be the next item in the list of items contained in the
+location of item. If there are no more then it is set to no item.
+.LP
+.I GETCHILDREN <item> <itemval>
+.LP
+Get the first thing contained within item. To walk along this list use
+GETNEXT after using GETCHILDREN.
+.LP
+.I PEXIT <number>
+.LP
+Print the name of an exit. The number matches the numbers for MOVE.
+.LP
+.I SETDESC <item> <number> <text1> <text2> <text3>
+.LP
+Concatenates the text arguments and assigs the result to the description for
+state number of item. If the number is invalid or the item is not an object
+nothing occurs.
+.LP
+.I SETLONG <item> <text1> <text2> <text3>
+.LP
+Set the long description of a room to the catenation of the three text
+strings. If item is not a room nothing happens.
+.LP
+.I SETSHORT <item> <text1> <text2> <text3>
+.LP
+Set the short description of a room to the catenation of the three text
+strings. If item is not a room nothing happens.
+.LP
+.I GETLONG <item>
+.LP
+Set {$} to be the long description of room item. If it is not a room then
+nothing happens.
+.LP
+.I GETSHORT <item>
+.LP
+Set {$} to be the short description of room item. If it is not a room then
+nothing happens.
+.LP
+.I GETDESC <item> <number>
+.LP
+Set {$} to be the description of object item in state number. If it is not an
+object or number is out range then nothing happens.
+.LP
+.I GETNAME <item>
+.LP
+Sets {$} to the name of item.
+.LP
+.I SWAT
+.LP
+Swaps {$} and {$2}.
+.LP
+.I FLAT <flag>
+.LP
+Sets {$} to the text for a flag in decimal.
+.LP
+.I FINDMASTER <number> <itemval>
+.LP
+Loads either $1 or $2 with the first item anywhere in the database matching
+the vocabulary words for the either the first or second user adjective/noun
+pair.
+.LP
+.I NEXTMASTER <item> <number> <itemval>
+.LP
+Loads either $1 or $2 with the next item after item anywhere in the database matching
+the vocabulary words for the either the first or second user adjective/noun
+pair.
+.LP
+.I FINDIN <item> <number> <itemval>
+.LP
+Loads either $1 or $2 with the first thing in item matching
+the vocabulary words for the either the first or second user adjective/noun
+pair.
+.LP
+.I NEXTIN <item1> <item2> <number> <itemval>
+.LP
+Loads either $1 or $2 with the next item in item1 after item2 matching
+the vocabulary words for the either the first or second user adjective/noun
+pair. Item2 must not have moved between the last call to NEXTIN or the call
+to FINDIN and this.
+.LP
+.I LENTEXT <text> <flag>
+.LP
+Set flag equal to the length in characters of the text string.
+.LP
+.I PROCSUBJECT <item>
+.LP
+Using the current vocabulary and item values scan the subject table of item,
+possibly including subclasses.
+.LP
+.I PROCOBJECT <item>
+.LP
+Using the current vocabulary and item values scan the object table of item,
+possibly including subclasses.
+.LP
+.LP
+.I PROCDAEMON <item>
+.LP
+Using the current vocabulary and item values scan the daemon table of item,
+possibly including subclasses. Use this with caution. It is intended to be
+called from within a daemon. It does no setting of $AC nor the other 
+processing done by the DAEMON actions.
+.LP
+.I GETSUPER <item> <itemval>
+.LP
+Set either $1 or $2 to be the direct superclass of item.
+.LP
+.I SETSUPER <item1> <item2>
+.LP
+Set the direct superclass of item1 to be item2. All of the superclasses above
+that will change to be the superclasses of item2.
+.LP
+.I MEMBER <item1> <item2>
+.LP
+True if item2 is one of the superclasses of item1.
+.LP
+.I CLS
+.LP
+Clear the display. This may or may not do something.
+.LP
+.I ISCLASS <item> <classflag>
+.LP
+True if item has classflag set.
+.LP
+.I SUBSTR <text1> <text2>
+.LP
+True if text2 is a substring of text1.
+.LP
+.I GETIN <item>
+.LP
+Set {$} to be the room entry message of item.
+.LP
+.I GETOUT <item>
+.LP
+Set {$} to be the room exit message of item.
+.LP
+.I GETHERE <item>
+.LP
+Set {$} to be the room description message of a player.
+.LP
+.I LOG <text1> <text2> <text3>
+.LP
+Write the results of catenating the three strings as a log file entry. A
+date, time and a few other pieces of system dependent information are
+written with the record.
+.LP
+.I SETCLASS <item> <classflag>
+.LP
+Set classflag of item.
+.LP
+.I UNSETCLASS <item> <classflag>
+.LP
+Clear classflag of item.
+.LP
+.I BITCLEAR <flag> <number>
+.LP
+Clear bit number of the flag.
+.LP
+.I BITSET <flag> <number>
+.LP
+Set bit number of the flag
+.LP
+.I BITTEST <flag> <number>
+.LP
+True if bit number of flag is set.
+.LP
+.I SPRINT <flag>
+.LP
+Set {$} equal to the decimal string representing flag. Equivalent to FLAT for
+historical reasons it is now identical.
+.LP
+.I USER <number> <number> <number> <item> <item> <text>
+.LP
+Invoke a user compiled function. See the source code for details.
+.LP
+.I SETI <itemval> <item>
+.LP
+Set either $1 or $2 to item.
+.LP
+.I CDAEMON <item> <verb> <noun> <noun>
+.LP
+Send a DAEMON to every user contained within item.
+.LP
+.I DELETE <text>
+.LP
+Delete the specified file. If the security define is set this action is 
+forbidden. If the delete files the action returns false.
+.LP
+.I ULOAD <text> <item>
+.LP
+Load the first 4 strings and the first 8 userflags of item from the file
+text. If this fails it returns false. A failure disturbs none of the current
+values. Not allowed if SECURE is defined.
+.LP
+.I USAVE <text> <item>
+.LP
+Save the first 4 strings and the first 8 userflags of item from the file
+text. If this fails it returns false. A failure disturbs none of the current
+values. Not allowed if SECURE is defined.
+.LP
+.I FLOAD <text> <flag1> <flag2>
+.LP
+Load the flags between flag1 and flag2 (inclusive) from a file. If the operation
+fails the flags are not affected and the condition returns false. Not allowed if
+SECURE is defined.
+.LP
+.I FSAVE <text> <flag1> <flag2>
+.LP
+Save the flags between flag1 and flag2 (inclusive) to file text. If the operation
+fails the flags are not affected and the condition returns false. Not allowed if
+SECURE is defined.
+.LP
+.I GETVIS <item> <flag>
+.LP
+Get the visibility (perception) of item and store it in flag.
+.LP
+.I MESSAGETO <item> <text>
+.LP
+Output the text followed by newline to item. If item isn't a user then nothing happens.
+.LP
+.I MSGTO <item> <text>
+.LP
+Output the text to item. If item isn't a user nothing happens.
+.LP
+.I RWHOINIT <text1> <text2> <text3> <text4>
+.LP
+Create an rwho connection and tell the rwho server we are up. The texts are:
+.IP <text1> 10
+Game name.
+.IP <text2> 10
+Game identity string.
+.IP <text3> 10
+IP Address of rwho server.
+.IP <text4> 10
+Mudwho server password.
+.LP
+.I RWHODOWN 
+.LP
+Tell the RWHO server the game is shutting down.
+.LP
+.I RWHOLOGIN <text1> <text2>
+.LP
+Log the user $ME into the RWHO server. The first text string is the short name supplied to
+the server and must match the RWHOLOGOUT name. The second is a long text of info - eg
+including a level name. Currently logged in players should call this again every 5 or so
+minutes to avoid timing out of the rwho server.
+.LP
+.I RWHOLOGOUT <text>
+.LP
+Tell the rwho server that the user (name text) has logged out. The user in question must be
+the current $ME. You may however vary the name so long as it matches the login name. It is
+common to log people out if they become invisible as well as on death, how you work it is
+up to you.
+.LP
+.I RWHOPING
+.LP
+Send an rwho keepalive packet.
+.LP
+.I SETEXIT <item1> <number> <item2>
+.LP
+Set the exit in direction number from item1 to item2. Number is an exit in the same form as MOVE.
+.LP
+.I DELEXIT <item> <number>
+.LP
+Delete the exit in direction number from item. Number is an exit in the same form as MOVE.
+.LP
+.I GETEXIT <item> <number> <itemval>
+.LP
+Copy exit number of item into $1 or $2. If there is no exit it is set to no item.
+.LP
+.I FORKDUMP <text>
+.LP
+Fork off a child of the game server which will exit its users and dump the state of the game world
+to file <text>. This function is still at a test stage.
+.LP
+

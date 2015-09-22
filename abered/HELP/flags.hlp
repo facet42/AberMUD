@@ -1,0 +1,10 @@
+  The commands for changing, and viewing flags on objects mobiles and locations
+are oflags, lflags, sflags, pflags, mflags. These allow you to query something
+by typing oflags <obj>, or to set/unset a flag by typing mflag <mob> true|false
+
+  List of exactly what flags of each type are available can be gotten by
+typing list flag_type, eg list oflags. New ones can be defined and old ones
+removed with undefine. For help on what each flag does, ask one of the gods
+or higher powers of the mud you intend the zone for, they will be able to
+answer you. Flags vary from mud to mud.
+

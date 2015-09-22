@@ -1,0 +1,18 @@
+
+   Ledit <location> <what> [new value]
+
+  Ledit is the major command for editing of locations. If you do not specify
+a location, it will assume the one you are in. Lflags and exits are also
+used to edit a locations. Values <what> can have:
+
+NAME: The name of the location as far as the mud is concerned. Players never
+      see this so only restriction is it must be unique.
+
+PNAME: This is the rooms title, or the name the players see when they enter 
+      the location.
+
+DESC: The room's description. The input can't be given on the command line for
+      this one as it is to long. 
+
+If you do not specify value on the command line you will be asked for one
+
