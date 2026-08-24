@@ -92,38 +92,44 @@ static void test_breakword_end_of_input(void)
 	TEST_CHECK_NULL(BreakWord("   ", fbuf, NULL, WD_NOISE));
 }
 
-/* BUG (pre-existing, also present in Original/Parser.c -- not introduced by
- * this fork): BreakWord's `fbuf` parameter is advanced in place while the
- * word is copied ("*fbuf++=*iptr++"), so by the time it reaches the
- * stricmp(fbuf,"AND"/"THEN") and FindInList(skiplist,fbuf,...) checks,
- * `fbuf` no longer points at the start of the extracted word -- it points
- * at the trailing NUL just written. Every one of those checks is
- * comparing "" against something, so it can never match. Contrast with
- * FNxPhrs() a little further down this file, which keeps a separate `fb`
- * pointer to the buffer's start for exactly this reason and does not have
- * the bug. Net effect: BreakWord's "AND"/"THEN" phrase-end detection and
- * its noise-word skipping are both dead code today. These tests pin the
- * current (buggy) behavior so it doesn't get silently changed further;
- * see the coverage report for whether to fix it. */
-static void test_breakword_and_then_never_matched_due_to_bug(void)
+/* Regression tests for a fixed bug: BreakWord's `fbuf` parameter used to
+ * be advanced in place while the word was copied ("*fbuf++=*iptr++"), so
+ * by the time it reached the stricmp(fbuf,"AND"/"THEN") and
+ * FindInList(skiplist,fbuf,...) checks, `fbuf` no longer pointed at the
+ * start of the extracted word -- it pointed at the trailing NUL just
+ * written, so those checks always compared "" against something and
+ * could never match. BreakWord now keeps a separate `wbuf` pointer to the
+ * buffer's start for those checks (mirroring how FNxPhrs already did it
+ * correctly), and resets the write cursor back to it before copying each
+ * candidate word so a skipped noise word doesn't leave its text in front
+ * of the word that replaces it. */
+static void test_breakword_detects_and_then(void)
 {
 	char fbuf[128];
-	char *rest;
-	rest = BreakWord("and rest", fbuf, NULL, WD_NOISE);
-	TEST_CHECK_EQ_STR(fbuf, "and");
-	TEST_CHECK_EQ_STR(rest, " rest");
-	rest = BreakWord("THEN rest", fbuf, NULL, WD_NOISE);
-	TEST_CHECK_EQ_STR(fbuf, "THEN");
-	TEST_CHECK_EQ_STR(rest, " rest");
+	TEST_CHECK_NULL(BreakWord("and rest", fbuf, NULL, WD_NOISE));
+	TEST_CHECK_NULL(BreakWord("THEN rest", fbuf, NULL, WD_NOISE));
 }
 
-static void test_breakword_noise_words_never_skipped_due_to_bug(void)
+static void test_breakword_skips_noise_words(void)
 {
 	char fbuf[128];
 	WLIST *noise = make_word("the", WD_NOISE, 0, NULL);
 	char *rest = BreakWord("the sword", fbuf, noise, WD_NOISE);
-	TEST_CHECK_EQ_STR(fbuf, "the");
-	TEST_CHECK_EQ_STR(rest, " sword");
+	TEST_CHECK_EQ_STR(fbuf, "sword");
+	TEST_CHECK_EQ_STR(rest, "");
+}
+
+static void test_breakword_skips_multiple_noise_words(void)
+{
+	char fbuf[128];
+	WLIST *a = make_word("a", WD_NOISE, 0, NULL);
+	WLIST *the = make_word("the", WD_NOISE, 0, a);
+	/* Each retry resets the write cursor to the buffer's start, so
+	 * consecutive skipped noise words don't accumulate leftover text
+	 * in front of the word that's finally kept. */
+	char *rest = BreakWord("the a sword", fbuf, the, WD_NOISE);
+	TEST_CHECK_EQ_STR(fbuf, "sword");
+	TEST_CHECK_EQ_STR(rest, "");
 }
 
 int main(int argc, char *argv[])
@@ -140,7 +146,8 @@ int main(int argc, char *argv[])
 	RUN_TEST(test_breakword_extracts_word_and_advances);
 	RUN_TEST(test_breakword_stops_at_terminator);
 	RUN_TEST(test_breakword_end_of_input);
-	RUN_TEST(test_breakword_and_then_never_matched_due_to_bug);
-	RUN_TEST(test_breakword_noise_words_never_skipped_due_to_bug);
+	RUN_TEST(test_breakword_detects_and_then);
+	RUN_TEST(test_breakword_skips_noise_words);
+	RUN_TEST(test_breakword_skips_multiple_noise_words);
 	return test_summary_and_exit();
 }

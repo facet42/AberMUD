@@ -240,10 +240,16 @@ WLIST *FindInList(register WLIST *list, register char *word, register short type
 	return(NULL);
 }
 
-char *BreakWord(register char *iptr, register char *fbuf, 
-	WLIST *skiplist, short skiptype)	
+char *BreakWord(register char *iptr, register char *fbuf,
+	WLIST *skiplist, short skiptype)
 /* returns next iptr  wbuf should be 128 bytes */
 {
+	char *wbuf=fbuf;	/* fbuf advances as the word is copied below,
+				   so wbuf keeps the start of the buffer for
+				   the AND/THEN/noise-word checks -- and for
+				   resetting fbuf before each retry, so a
+				   skipped noise word doesn't leave its text
+				   in front of the word that replaces it */
 	if((*iptr=='.')||(*iptr==';')||(*iptr==','))
 		return(NULL);		/* Phrase end */
 	if((*iptr==':')||(*iptr=='"')||(*iptr=='/')||(*iptr=='\''))
@@ -261,17 +267,18 @@ l1:	while(*iptr)
 		return(NULL);		/* List expired */
 	if((*iptr=='.')||(*iptr==';')||(*iptr==','))
 		return(NULL);		/* Phrase end */
+	fbuf=wbuf;
 	while(*iptr)
 		if((!isspace(*iptr))&&(*iptr!=',')&&(*iptr!=';')&&(*iptr!='.'))
 			*fbuf++=*iptr++;
 		else
 			break;
 	*fbuf=0;
-	if(stricmp(fbuf,"AND")==0)
+	if(stricmp(wbuf,"AND")==0)
 		return(NULL);
-	if(stricmp(fbuf,"THEN")==0)
+	if(stricmp(wbuf,"THEN")==0)
 		return(NULL);
-	if(FindInList(skiplist,fbuf,skiptype))
+	if(FindInList(skiplist,wbuf,skiptype))
 		goto l1;
 	return(iptr);
 }
