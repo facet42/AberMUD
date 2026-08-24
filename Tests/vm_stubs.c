@@ -120,6 +120,164 @@ short LevelOf(ITEM *x)
 
 int ArchWizard(ITEM *i) { (void)i; return 0; }
 
+/* ---- item-tree linking and container capacity (System.c/Container.c) ---- */
+/* Verbatim, so Act_Get/Act_Drop/Act_Swap/.../Cnd_CanPut actually move items
+ * and enforce weight/size/count limits instead of being no-ops. */
+
+int UnlinkItem(register ITEM *x)
+{
+	register ITEM *a;
+	if (O_FREE(x))
+		return (0);
+	if (O_CHILDREN(O_PARENT(x)) == x) {
+		O_CHILDREN(O_PARENT(x)) = O_NEXT(x);
+		O_PARENT(x) = NULL;
+		O_NEXT(x) = NULL;
+		return (0);
+	}
+	a = O_CHILDREN(O_PARENT(x));
+	if (a == NULL)
+		return (0);
+	while (O_NEXT(a)) {
+		if (O_NEXT(a) == x) {
+			O_NEXT(a) = O_NEXT(x);
+			O_PARENT(x) = NULL;
+			O_NEXT(x) = NULL;
+			return (0);
+		}
+		a = O_NEXT(a);
+	}
+	return (0);
+}
+
+int LinkItem(ITEM *a, ITEM *b)
+{
+	if (!O_FREE(a))
+		return (-1);
+	O_PARENT(a) = b;
+	if (b) {
+		O_NEXT(a) = O_CHILDREN(b);
+		O_CHILDREN(b) = a;
+	} else {
+		O_NEXT(a) = NULL;
+	}
+	return (0);
+}
+
+void XPlace(ITEM *x, ITEM *y)
+{
+	if (!O_FREE(x))
+		UnlinkItem(x);
+	LinkItem(x, y);
+}
+
+void Place(ITEM *x, ITEM *y)
+{
+	if (IsObject(x))
+		ObjectOf(x)->ob_Flags &= ~OB_WORN;
+	XPlace(x, y);
+}
+
+int WeightOf(ITEM *x)
+{
+	OBJECT *o = ObjectOf(x);
+	PLAYER *p = PlayerOf(x);
+	if (o)
+		return (o->ob_Weight);
+	if (p)
+		return (p->pl_Weight);
+	return (0);
+}
+
+static int WeightRec(ITEM *x, int d)
+{
+	int n = WeightOf(x);
+	ITEM *o;
+	if (d > 32)
+		return (0);
+	o = O_CHILDREN(x);
+	while (o) {
+		n += WeightRec(o, d + 1);
+		o = O_NEXT(o);
+	}
+	return (n);
+}
+
+int WeighUp(ITEM *x) { return (WeightRec(x, 0)); }
+
+int SizeOfRec(ITEM *o, int d);
+
+static int SizeRec(ITEM *x, int d)
+{
+	ITEM *o;
+	int n = 0;
+	o = O_CHILDREN(x);
+	if (d > 32)
+		return (0);
+	while (o) {
+		n += SizeOfRec(o, d);
+		o = O_NEXT(o);
+	}
+	return (n);
+}
+
+int SizeOfRec(ITEM *o, int d)
+{
+	OBJECT *a = ObjectOf(o);
+	PLAYER *b = PlayerOf(o);
+	CONTAINER *c = ContainerOf(o);
+	if (((c) && (c->co_Flags & CO_SOFT)) || (!c)) {
+		if (a)
+			return (a->ob_Size + SizeRec(o, d + 1));
+		if (b)
+			return (b->pl_Size + SizeRec(o, d + 1));
+		return (SizeRec(o, d + 1));
+	}
+	if (a)
+		return (a->ob_Size);
+	if (b)
+		return (b->pl_Size);
+	return (0);
+}
+
+int SizeContents(ITEM *x) { return (SizeRec(x, 0)); }
+
+int CanPlace(ITEM *x, ITEM *y)
+{
+	ITEM *z = O_PARENT(x);
+	CONTAINER *c = ContainerOf(y);
+	PLAYER *p = PlayerOf(y);
+	int cap = 0;
+	int wt;
+	if ((c == NULL) && (p == NULL))
+		return (0);
+	XPlace(x, NULL);
+	if (c)
+		cap = SizeContents(y);
+	wt = WeighUp(y);
+	XPlace(x, z);
+	if (c) {
+		cap = c->co_Volume - cap;
+		cap -= SizeOfRec(x, 0);
+		if (cap < 0)
+			return (-1);
+	}
+	if (p)
+		if (wt + WeighUp(x) - WeightOf(y) > p->pl_Level * 10 + 400)
+			return (-2);
+	if (p) {
+		short ct = 0;
+		ITEM *step = O_CHILDREN(y);
+		while (step) {
+			ct++;
+			step = O_NEXT(step);
+		}
+		if (ct > 9)
+			return (-3);
+	}
+	return (0);
+}
+
 /* ---- everything else: trivial stubs for engine areas out of scope ---- */
 
 void Act_BSXObject(void) {}
@@ -152,7 +310,6 @@ TPTR AllocText(char *s) { (void)s; return NULL; }
 void Broadcast(char *msg, int flag) { (void)msg; (void)flag; }
 char *CNameOf(ITEM *i) { (void)i; return ""; }
 int CanGoto(ITEM *a, ITEM *b) { (void)a; (void)b; return 0; }
-int CanPlace(ITEM *a, ITEM *b) { (void)a; (void)b; return 0; }
 void ChainDaemon(ITEM *a, int b, int c, int d) { (void)a; (void)b; (void)c; (void)d; }
 ITEM *Clone_Item(ITEM *a, short b) { (void)a; (void)b; return NULL; }
 void Cmd_Exits(ITEM *a, ITEM *b) { (void)a; (void)b; }
@@ -229,7 +386,6 @@ ITEM *NextIn(short a, ITEM *b, short c, short d) { (void)a; (void)b; (void)c; (v
 ITEM *NextInByClass(short a, ITEM *b, short c) { (void)a; (void)b; (void)c; return NULL; }
 ITEM *NextMaster(short a, ITEM *b, short c, short d) { (void)a; (void)b; (void)c; (void)d; return NULL; }
 void PermitInput(int a) { (void)a; }
-void Place(ITEM *a, ITEM *b) { (void)a; (void)b; }
 void RemoveUser(unsigned int u) { (void)u; }
 void RunDaemon(ITEM *a, int b, int c, int d) { (void)a; (void)b; (void)c; (void)d; }
 int SaveNewPersona(UFF *u) { (void)u; return -1; }
@@ -271,5 +427,4 @@ void TreeDaemon(ITEM *a, int b, int c, int d) { (void)a; (void)b; (void)c; (void
 void UnlockItem(ITEM *i) { (void)i; }
 void UserVector(short a, short b, short c, ITEM *d, ITEM *e, TPTR f) { (void)a; (void)b; (void)c; (void)d; (void)e; (void)f; }
 int ValidItem(ITEM *i) { (void)i; return 1; }
-int WeighUp(ITEM *i) { (void)i; return 0; }
 void WipeLine(LINE *l) { (void)l; }

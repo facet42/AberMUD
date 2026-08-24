@@ -88,6 +88,33 @@ static void attach_room(ITEM *item, ROOM *r, unsigned short flags)
 	item->it_Properties = (SUB *)r;
 }
 
+/* Sets item->it_Parent AND threads it into parent->it_Children -- unlike
+ * a raw `.it_Parent = x` poke, this leaves both sides of the doubly-linked
+ * item tree consistent, which matters for any test that exercises Place()/
+ * CanPlace() (they walk it_Children via UnlinkItem/SizeRec/WeightRec, not
+ * just it_Parent). Condition-only tests that never call Place() don't need
+ * this -- they only ever read it_Parent. */
+static void link_item(ITEM *item, ITEM *parent)
+{
+	item->it_Parent = parent;
+	if (parent) {
+		item->it_Next = parent->it_Children;
+		parent->it_Children = item;
+	} else {
+		item->it_Next = NULL;
+	}
+}
+
+static void attach_container(ITEM *item, CONTAINER *c, short volume, short flags)
+{
+	memset(c, 0, sizeof(CONTAINER));
+	c->co_Sub.pr_Key = KEY_CONTAINER;
+	c->co_Sub.pr_Next = item->it_Properties;
+	c->co_Volume = volume;
+	c->co_Flags = flags;
+	item->it_Properties = (SUB *)c;
+}
+
 /* ---- item-relationship conditions ---- */
 
 static void test_cnd_at_and_notat(void)
@@ -657,6 +684,210 @@ static void test_act_setstate(void)
 	TEST_CHECK_EQ_INT(item.it_State, 3);
 }
 
+/* ---- item-movement actions (Place/CanPlace real, see vm_stubs.c) ---- */
+
+static void test_act_get_and_drop(void)
+{
+	ITEM player, room, coin;
+	OBJECT coin_obj;
+	reset_item(&player); reset_item(&room); reset_item(&coin);
+	link_item(&player, &room);
+	SetMe(&player);
+	attach_object(&coin, &coin_obj, OB_CANGET);
+	link_item(&coin, &room);
+
+	unsigned short get[] = { OP("GET"), ARG1, CMD_EOL };
+	Item1 = &coin;
+	RunCode(get);
+	TEST_CHECK(O_PARENT(&coin) == &player);
+
+	unsigned short drop[] = { OP("DROP"), ARG1, CMD_EOL };
+	RunCode(drop);
+	TEST_CHECK(O_PARENT(&coin) == &room);
+}
+
+static void test_act_get_guards(void)
+{
+	ITEM player, room, rock, held;
+	OBJECT rock_obj, held_obj;
+	reset_item(&player); reset_item(&room); reset_item(&rock); reset_item(&held);
+	link_item(&player, &room);
+	SetMe(&player);
+
+	/* no OB_CANGET flag -> stays put */
+	attach_object(&rock, &rock_obj, 0);
+	link_item(&rock, &room);
+	unsigned short get[] = { OP("GET"), ARG1, CMD_EOL };
+	Item1 = &rock;
+	RunCode(get);
+	TEST_CHECK(O_PARENT(&rock) == &room);
+
+	/* already carrying -> stays with player, doesn't error out */
+	attach_object(&held, &held_obj, OB_CANGET);
+	link_item(&held, &player);
+	Item1 = &held;
+	RunCode(get);
+	TEST_CHECK(O_PARENT(&held) == &player);
+}
+
+static void test_act_wear_remove(void)
+{
+	ITEM player, coat;
+	OBJECT coat_obj;
+	reset_item(&player); reset_item(&coat);
+	SetMe(&player);
+	attach_object(&coat, &coat_obj, OB_CANWEAR);
+	coat.it_Parent = &player;
+
+	unsigned short wear[] = { OP("WEAR"), ARG1, CMD_EOL };
+	Item1 = &coat;
+	RunCode(wear);
+	TEST_CHECK((coat_obj.ob_Flags & OB_WORN) != 0);
+
+	unsigned short remove[] = { OP("REMOVE"), ARG1, CMD_EOL };
+	RunCode(remove);
+	TEST_CHECK((coat_obj.ob_Flags & OB_WORN) == 0);
+}
+
+static void test_act_wear_guards(void)
+{
+	ITEM player, dropped, uncanwearable;
+	OBJECT dropped_obj, uncanwearable_obj;
+	reset_item(&player); reset_item(&dropped); reset_item(&uncanwearable);
+	SetMe(&player);
+
+	/* not carrying -> WEAR refuses */
+	attach_object(&dropped, &dropped_obj, OB_CANWEAR);
+	unsigned short wear[] = { OP("WEAR"), ARG1, CMD_EOL };
+	Item1 = &dropped;
+	RunCode(wear);
+	TEST_CHECK((dropped_obj.ob_Flags & OB_WORN) == 0);
+
+	/* carried but missing OB_CANWEAR -> WEAR refuses */
+	attach_object(&uncanwearable, &uncanwearable_obj, 0);
+	uncanwearable.it_Parent = &player;
+	Item1 = &uncanwearable;
+	RunCode(wear);
+	TEST_CHECK((uncanwearable_obj.ob_Flags & OB_WORN) == 0);
+}
+
+static void test_act_create_destroy(void)
+{
+	ITEM player, room, ghost;
+	OBJECT ghost_obj;
+	reset_item(&player); reset_item(&room); reset_item(&ghost);
+	player.it_Parent = &room;
+	SetMe(&player);
+	attach_object(&ghost, &ghost_obj, OB_DESTROYED);
+
+	unsigned short create[] = { OP("CREATE"), ARG1, CMD_EOL };
+	Item1 = &ghost;
+	RunCode(create);
+	TEST_CHECK(O_PARENT(&ghost) == &room);
+	TEST_CHECK((ghost_obj.ob_Flags & OB_DESTROYED) == 0);
+
+	unsigned short destroy[] = { OP("DESTROY"), ARG1, CMD_EOL };
+	RunCode(destroy);
+	TEST_CHECK(O_PARENT(&ghost) == NULL);
+	TEST_CHECK((ghost_obj.ob_Flags & OB_DESTROYED) != 0);
+}
+
+static void test_act_swap_and_place(void)
+{
+	ITEM room_a, room_b, x, y;
+	reset_item(&room_a); reset_item(&room_b); reset_item(&x); reset_item(&y);
+	link_item(&x, &room_a);
+	link_item(&y, &room_b);
+
+	unsigned short swap[] = { OP("SWAP"), ARG1, ARG2, CMD_EOL };
+	Item1 = &x; Item2 = &y;
+	RunCode(swap);
+	TEST_CHECK(O_PARENT(&x) == &room_b);
+	TEST_CHECK(O_PARENT(&y) == &room_a);
+
+	unsigned short place[] = { OP("PLACE"), ARG1, ARG2, CMD_EOL };
+	Item1 = &x; Item2 = &room_a;
+	RunCode(place);
+	TEST_CHECK(O_PARENT(&x) == &room_a);
+}
+
+static void test_act_putin_takeout(void)
+{
+	ITEM player, box, marble;
+	CONTAINER box_con;
+	reset_item(&player); reset_item(&box); reset_item(&marble);
+	SetMe(&player);
+	attach_container(&box, &box_con, 100, CO_CANPUTIN | CO_CANGETOUT);
+	link_item(&marble, &player);
+
+	unsigned short putin[] = { OP("PUTIN"), ARG1, ARG2, CMD_EOL };
+	Item1 = &marble; Item2 = &box;
+	RunCode(putin);
+	TEST_CHECK(O_PARENT(&marble) == &box);
+
+	unsigned short takeout[] = { OP("TAKEOUT"), ARG1, ARG2, CMD_EOL };
+	/* Act_TakeOut needs $1 to be a proper OBJECT (IsObject() check) */
+	OBJECT marble_obj;
+	attach_object(&marble, &marble_obj, OB_CANGET);
+	RunCode(takeout);
+	TEST_CHECK(O_PARENT(&marble) == &player);
+}
+
+static void test_act_putin_refuses_when_closed(void)
+{
+	ITEM player, jar, marble;
+	CONTAINER jar_con;
+	reset_item(&player); reset_item(&jar); reset_item(&marble);
+	SetMe(&player);
+	attach_container(&jar, &jar_con, 100, CO_CANPUTIN | CO_CLOSES);
+	jar.it_State = 1;	/* CO_CLOSES + state!=0 means "closed" */
+	link_item(&marble, &player);
+
+	unsigned short putin[] = { OP("PUTIN"), ARG1, ARG2, CMD_EOL };
+	Item1 = &marble; Item2 = &jar;
+	RunCode(putin);
+	TEST_CHECK(O_PARENT(&marble) == &player);	/* refused, stayed put */
+}
+
+static void test_cnd_canput(void)
+{
+	ITEM box, pebble, boulder;
+	CONTAINER box_con;
+	OBJECT pebble_obj, boulder_obj;
+	reset_item(&box);
+	reset_item(&pebble); reset_item(&boulder);
+	attach_container(&box, &box_con, 10, 0);
+	attach_object(&pebble, &pebble_obj, 0);
+	pebble_obj.ob_Size = 2;
+	attach_object(&boulder, &boulder_obj, 0);
+	boulder_obj.ob_Size = 50;	/* bigger than the box's volume */
+
+	unsigned short canput[] = IF_THEN_MARK(OP("CANPUT"), ARG1, ARG2);
+	Item1 = &pebble; Item2 = &box;
+	TEST_CHECK(CodeSucceeds(canput));
+	Item1 = &boulder; Item2 = &box;
+	TEST_CHECK(!CodeSucceeds(canput));
+}
+
+static void test_cnd_canput_too_heavy_for_player(void)
+{
+	ITEM player, feather, anvil;
+	PLAYER player_p;
+	OBJECT feather_obj, anvil_obj;
+	reset_item(&player); reset_item(&feather); reset_item(&anvil);
+	attach_player(&player, &player_p, 1, 0);	/* level 1 -> limit 410 */
+	attach_object(&feather, &feather_obj, 0);
+	feather_obj.ob_Weight = 1;
+	attach_object(&anvil, &anvil_obj, 0);
+	anvil_obj.ob_Weight = 5000;
+
+	unsigned short canput[] = IF_THEN_MARK(OP("CANPUT"), ARG1, ARG2);
+	Item1 = &feather; Item2 = &player;
+	TEST_CHECK(CodeSucceeds(canput));
+	Item1 = &anvil; Item2 = &player;
+	TEST_CHECK(!CodeSucceeds(canput));
+}
+
 /* ---- a full "IF ... THEN ..." line, conditions gating actions ---- */
 
 static void test_line_stops_at_failed_condition(void)
@@ -717,6 +948,16 @@ int main(int argc, char *argv[])
 	RUN_TEST(test_act_oset_oclear);
 	RUN_TEST(test_act_rset_rclear);
 	RUN_TEST(test_act_setstate);
+	RUN_TEST(test_act_get_and_drop);
+	RUN_TEST(test_act_get_guards);
+	RUN_TEST(test_act_wear_remove);
+	RUN_TEST(test_act_wear_guards);
+	RUN_TEST(test_act_create_destroy);
+	RUN_TEST(test_act_swap_and_place);
+	RUN_TEST(test_act_putin_takeout);
+	RUN_TEST(test_act_putin_refuses_when_closed);
+	RUN_TEST(test_cnd_canput);
+	RUN_TEST(test_cnd_canput_too_heavy_for_player);
 	RUN_TEST(test_line_stops_at_failed_condition);
 	return test_summary_and_exit();
 }
