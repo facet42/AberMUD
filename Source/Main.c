@@ -20,6 +20,9 @@
 #include <signal.h>
 #include <fcntl.h>
 #include <unistd.h>
+#ifdef _WIN32
+#include <conio.h>
+#endif
 #define SMALL_MALLOC
 
 #undef	TCP_WRAP		/* Use access controls */
@@ -51,37 +54,39 @@ short post_boot;	/* Set to 1 if game booted */
 void ExitFunction(void)
 {
 	printf("\nPress any key to exit.\n");
+#ifdef _WIN32
+	/* Keeps the console window open when launched by double-clicking
+	 * the exe, which would otherwise close immediately on exit. Not
+	 * needed when run from a shell, which is the only way this starts
+	 * on other platforms. */
 	_getwch();
+#endif
 }
 
-#if defined UNIX
-#define signal_function	void
-#else
-#define signal_function int
-#endif
-
-#ifdef _WIN32
-signal_function SegV(int v)
-#else
-signal_function SegV()
-#endif
+/*
+ * ISO C and POSIX both specify a signal handler as void(int); this used
+ * to be picked by a signal_function macro keyed on a UNIX macro that no
+ * build in this tree (Makefile or the Visual Studio project) ever
+ * defines, so it always took the wrong (int-returning) branch here and
+ * conflicted with the void declarations in prototype.h.
+ */
+void SegV(int v)
 {
+	(void)v;
 	Log("Segmentation Fault caused abort");
 	abort();
 }
 
-signal_function Bus()
+void Bus(int v)
 {
+	(void)v;
 	Log("Bus error caused abort");
 	abort();
 }
 
-#ifdef _WIN32
-signal_function Div0(int v)
-#else
-signal_function Div0()
-#endif
+void Div0(int v)
 {
+	(void)v;
 	Log("Divison by zero");
 	abort();
 }

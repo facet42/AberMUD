@@ -260,7 +260,14 @@ void Act_Getvis()
 	SetFlag(n,i->it_Perception);
 }
 
+/* CreateThread() (the Windows path in Act_ForkDump() below) requires a
+ * thread-proc callback of exactly this signature; the fork() path just
+ * calls it directly with the plain char* it already has. */
+#ifdef _WIN32
 unsigned long WINAPI Act_ForkDumpChild(LPVOID x)
+#else
+void Act_ForkDumpChild(char *x)
+#endif
 {
 	/*
 	*	Child now does some work

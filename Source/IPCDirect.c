@@ -614,7 +614,24 @@ int ReadMPort(PORT *a, COMTEXT *b)
 		return(-2);
 	}
 
+#ifdef _WIN32
 	int result = select(NFDBITS, &rfm, NULL, NULL, &tvl);
+#else
+	/*
+	 *	NFDBITS is bits-per-word in an fd_set (32 or 64), not a
+	 *	descriptor count -- select()'s first argument needs the
+	 *	highest fd currently in the set, plus one, or it silently
+	 *	stops watching any connection whose fd number is >= NFDBITS.
+	 */
+	int maxfd = -1;
+	{
+		int fd;
+		for (fd = 0; fd < FD_SETSIZE; fd++)
+			if (FD_ISSET(fd, &rfm))
+				maxfd = fd;
+	}
+	int result = select(maxfd + 1, &rfm, NULL, NULL, &tvl);
+#endif
 	if (result == -1)
 	{
 		perror("select");
@@ -624,7 +641,23 @@ int ReadMPort(PORT *a, COMTEXT *b)
 	/* Now do reading */
 	do
 	{
+#ifdef _WIN32
+		/*
+		 *	Windows' fd_set is a compact array of the sockets
+		 *	actually in the set, so fd_array[ct] fetches the ct-th
+		 *	ready socket directly.
+		 */
 		SOCKET s = rfm.fd_array[ct];
+#else
+		/*
+		 *	POSIX's fd_set is a bitmask with no equivalent lookup,
+		 *	so walk candidate descriptor numbers instead and let
+		 *	FD_ISSET below filter them; ct still persists across
+		 *	calls for the same round-robin fairness the Windows
+		 *	path gets from fd_array.
+		 */
+		int s = ct;
+#endif
 		if(s==MainFD||s==AltFD||s==BsxFD)
 		{
 			if(FD_ISSET(s,&rfm))
@@ -632,7 +665,7 @@ int ReadMPort(PORT *a, COMTEXT *b)
 				return(MakeConnection((int)s, b));
 /*				return(0);*/
 			}
-		} 
+		}
 		else if (FD_ISSET(s, &rfm))
 		{
 			if (IsUserFD((int)s) != -1 && ReadBlock(FindUserFD((int)s), b) == 1)
@@ -642,7 +675,11 @@ int ReadMPort(PORT *a, COMTEXT *b)
 		}
 
 		ct++;
+#ifdef _WIN32
 		if(ct==NFDBITS)
+#else
+		if(ct==FD_SETSIZE)
+#endif
 			ct=0;
 	}
 	while(ct!=oct);
