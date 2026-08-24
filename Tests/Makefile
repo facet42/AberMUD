@@ -10,7 +10,7 @@
 SRC     = ../Source
 CC      = gcc -Wall -pedantic -I$(SRC)
 
-BINS    = test_ansibits test_parser test_flagname test_vm
+BINS    = test_ansibits test_parser test_flagname test_vm test_saveload
 
 check: $(BINS)
 	@status=0; \
@@ -31,6 +31,12 @@ test_flagname: test_flagname.c $(SRC)/FlagName.c $(SRC)/Parser.c engine_stubs.c 
 
 test_vm: test_vm.c $(SRC)/CondCode.c $(SRC)/ActionCode.c $(SRC)/TableDriver.c vm_stubs.c test_framework.h
 	$(CC) test_vm.c $(SRC)/CondCode.c $(SRC)/ActionCode.c $(SRC)/TableDriver.c $(SRC)/AnsiBits.c vm_stubs.c -o $@
+
+# test_saveload.c #includes SaveLoad.c's source directly (to reach its
+# static functions), so SaveLoad.c is NOT also passed here -- that
+# would define everything twice.
+test_saveload: test_saveload.c $(SRC)/SaveLoad.c saveload_stubs.c test_framework.h
+	$(CC) test_saveload.c saveload_stubs.c -o $@
 
 clean:
 	rm -f $(BINS)

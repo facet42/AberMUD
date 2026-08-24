@@ -2,3 +2,4 @@ test_ansibits
 test_parser
 test_flagname
 test_vm
+test_saveload
