@@ -1,5 +1,15 @@
 
 
+# Sources live under Source/; VPATH lets every rule below keep referring
+# to bare filenames (NoMalloc.c, System.h, ...) while make finds them
+# there. Object files are still produced in this directory.
+VPATH   = Source
+
+# runaber.c and IPCClean.c were listed here but never actually shipped,
+# even in the original upstream 5.30 source tree (Original/Makefile has
+# the identical entries with no matching files) -- inherited breakage,
+# not something this fork introduced. Nothing else in the codebase
+# references either name, so dropped rather than guessed at.
 CFILES  = NoMalloc.c Main.c NewCmd.c AnsiBits.c TableDriver.c \
 	  TabCommand.c CompileTable.c InsAndOuts.c System.c PlyCommand.c \
 	  ObjCommand.c GenCommand.c SysSupport.c RoomCommands.c Editing.c \
@@ -7,7 +17,7 @@ CFILES  = NoMalloc.c Main.c NewCmd.c AnsiBits.c TableDriver.c \
 	  ComServer.c CondCode.c ActionCode.c TimeSched.c UserFile.c Daemons.c \
 	  TableEditing.c Container.c ExitLogic.c ContCommand.c Snoop.c \
 	  DarkLight.c Duplicator.c FlagControl.c UtilCommand.c ObjectEdit.c \
-	  Class.c LookFor.c UserVector.c FlagName.c FindPW.c runaber.c IPCClean.c \
+	  Class.c LookFor.c UserVector.c FlagName.c FindPW.c \
 	  LibRwho.c AberRwho.c IPCDirect.c LibSocket.c ValidLogin.c \
 	  BSX.c
 
@@ -24,7 +34,7 @@ OFILES  = NoMalloc.o Main.o NewCmd.o AnsiBits.o TableDriver.o \
 
 HEADERS = System.h User.h Comms.h NoProto.h
 
-LDFLAGS = 
+LDFLAGS =
 ECHO    = /bin/echo
 MV	= /bin/mv
 TOUCH   = touch
@@ -56,8 +66,6 @@ FindPW  : UserFile.o FindPW.o AnsiBits.o
 	${CC} ${LDFLAGS} FindPW.o UserFile.o AnsiBits.o -o FindPW
 
 FindPW.o : FindPW.c
-
-runaber.o : runaber.c
 
 Run_Aber : Run_Aber.o
 	${CC} ${LDFLAGS} Run_Aber.o -o Run_Aber

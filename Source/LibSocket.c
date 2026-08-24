@@ -34,10 +34,6 @@
 #include <pragmas/socket_pragmas.h>
 #endif
 
-#ifndef _WIN32
-extern int errno;
-#endif
-
 static struct sockaddr_in myaddress;
 static int master_socket;
 

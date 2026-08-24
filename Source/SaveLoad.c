@@ -45,8 +45,16 @@ Module	"DiskIO";
 Version	"1.24";
 Author  "----*(A)";
 
+/*
+ * Was "extern int errno;" here instead of including <errno.h>. That
+ * declares errno as an ordinary global int, which happened to work on
+ * older Unix C libraries but conflicts with modern glibc, where errno
+ * is thread-local storage accessed through a macro -- linking against
+ * it as a plain non-TLS symbol is a hard error ("TLS definition ...
+ * mismatches non-TLS reference"), not just wrong behavior.
+ */
 #ifndef _WIN32
-extern int errno;
+#include <errno.h>
 #endif
 
 extern ITEM *ItemList;
@@ -181,16 +189,34 @@ register unsigned long x;
 
 static long LoadLong(FILE *f)
 {
+	uint32_t value;
+
 	Load_Error = 0;
-	long a = LoadShort(f);
-	long value = (a * 65536L + LoadShort(f));
+	/* Two separate statements, not one expression: C does not
+	 * guarantee left-to-right evaluation order of a's and b's
+	 * subexpressions in "a + b" or "a | b", and the two LoadShort()
+	 * calls must run high word first to match SaveLong(). */
+	value = (uint32_t)LoadShort(f) << 16;
+	value |= (uint32_t)LoadShort(f);
 
 	if (Load_Error != 0)
 	{
 		return 0;
 	}
 
-	return value;
+	/*
+	 * SaveLong() writes a 32-bit quantity split into two shorts,
+	 * including negative values such as SaveItem()'s -1 "no item"
+	 * sentinel. Without this cast, reassembling 0xFFFFFFFF into a plain
+	 * `long` zero-extends it to 4294967295 on a 64-bit build instead of
+	 * sign-extending it to -1, so LoadItem()'s "x < 0 means NULL" check
+	 * never fires and it indexes ItemArray with a huge value instead --
+	 * this is what crashed loading the very first item with no parent.
+	 * The (int32_t) cast reinterprets the same 32 bits as signed before
+	 * widening to `long`, which sign-extends correctly on every
+	 * platform regardless of long's width.
+	 */
+	return (long)(int32_t)value;
 }
 
 static void SaveItem(file,i)
