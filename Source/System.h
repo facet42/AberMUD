@@ -23,6 +23,8 @@
 #include <setjmp.h>
 #include <stdarg.h>
 #include <unistd.h>
+#include <stdint.h>
+#include <inttypes.h>
 
 #include "IPC.h"
 #include "Comms.h"
@@ -529,8 +531,7 @@ struct ParserContext
 	short pa_Her[2];
 	short pa_There[2];
 	short pa_Verb;		/* <1 means none */
-}
-ParserContext;
+};
 
 // typedef struct ParserContext PCONTEXT;
 
@@ -603,7 +604,7 @@ typedef struct _bsximage
 /* ----------------------- System.c Functions ---------------------- */
 
 #ifdef ANSI_C
-#include "Prototype.h"		/* NON ANSI IS UNTESTED */
+#include "prototype.h"		/* NON ANSI IS UNTESTED */
 #else
-#include "NoPrototype.h"
+#include "NoProto.h"
 #endif
