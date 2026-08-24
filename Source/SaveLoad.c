@@ -69,7 +69,7 @@ extern ITEM *ItemList;
 static void SaveShort();
 static unsigned short LoadShort();
 static void SaveLong();
-static unsigned long LoadLong();
+static long LoadLong();
 static void SaveItem();
 static ITEM *LoadItem();
 static void SaveString();
@@ -86,8 +86,7 @@ static void SaveSub();
 static void LoadSub();
 static void LoadObject();
 static void SaveObject();
-static void SetTwo();
-static long GetTwo();
+static void SetPtrArg();
 static unsigned short *SaveAction();
 static short *LoadAction();
 static void LoadLine();
@@ -103,19 +102,31 @@ static ITEM **ItemArray;	/* Used for item loaders */
 static long Load_Format=-1;
 static int Load_Error=0;
 
-static void SetTwo(x,v)
+/* ENODATA (used below to flag "ran out of data before expected end") is
+ * a Linux/glibc errno extension, not declared by MSVC and not part of
+ * the C or POSIX base standard, so it cannot be relied on for a
+ * portable build. Load_Error is only ever compared against zero
+ * (never passed to strerror() or similar), so any distinct nonzero
+ * value works here. */
+#define LOAD_EOF_ERROR (-1)
+
+/* Packs a pointer into the four words of a compiled line argument slot
+ * of type dollar, T, or I -- same high-word-first layout as PairArg()
+ * (CompileTable.c), which is used directly as the decode side below
+ * instead of duplicating it. Widened from two words (32 bits total) to
+ * four (64 bits) so it round-trips a real pointer on a 64-bit build
+ * instead of silently truncating it; the on-disk save format these two
+ * functions sit between (SaveShort, LoadItem, LoadString) is
+ * untouched, so existing .uni files still load fine. */
+static void SetPtrArg(x,v)
 unsigned short *x;
 register char *v;
 {
-	x[1]=(unsigned short)(((uintptr_t)v)%65536);	/* Safe -we never extract this pointer */
-	x[0]=(unsigned short)(((uintptr_t)v)/65536);	/* directly so little endians should */
-													/* be just fine.... CHANGE TO HTONS?? */
-}
-
-static long GetTwo(x)
-register unsigned short *x;
-{
-	return(x[1]+65536L*x[0]);
+	uintptr_t p=(uintptr_t)v;
+	x[0]=(unsigned short)(p>>48);
+	x[1]=(unsigned short)(p>>32);
+	x[2]=(unsigned short)(p>>16);
+	x[3]=(unsigned short)(p);
 }
 
 static void SaveShort(file,v)
@@ -140,7 +151,7 @@ static unsigned short LoadShort(FILE* x)
 
 	if (feof(x))
 	{
-		Load_Error = ENODATA;
+		Load_Error = LOAD_EOF_ERROR;
 		return 0;
 	}
 
@@ -149,7 +160,7 @@ static unsigned short LoadShort(FILE* x)
 #ifndef _WIN32
 		Load_Error = errno;
 #else
-		Load_Error = ENODATA;
+		Load_Error = LOAD_EOF_ERROR;
 		return 0;
 #endif
 	}
@@ -838,8 +849,8 @@ register unsigned short *c;
 		switch(*ptr++)
 		{
 		case '$':;
-		case 'T':t=(TPTR )(uintptr_t)GetTwo(c);
-			 c+=2;
+		case 'T':t=(TPTR )PairArg(c);
+			 c+=4;
 			 if(t==(TPTR )1)
 				SaveShort(file,0);
 			 else
@@ -853,8 +864,8 @@ register unsigned short *c;
 				}
 			 }
 			 break;
-		case 'I':i=(ITEM *)(uintptr_t)GetTwo(c);
-			 c+=2;
+		case 'I':i=(ITEM *)PairArg(c);
+			 c+=4;
 			 if(i==(ITEM *)1)
 			 {
 				SaveShort(file,1);
@@ -921,8 +932,8 @@ register short *c;
 				case 3:t=(TPTR)3;break;
 				default:t=LoadComment(file);
 			 }
-			 SetTwo(c,(char *)t);
-			 c+=2;
+			 SetPtrArg(c,(char *)t);
+			 c+=4;
 			 break;
 		case 'T':switch(LoadShort(file))
 			 {
@@ -930,8 +941,8 @@ register short *c;
 				case 3:t=(TPTR) 3;break;
 				default:t=LoadString(file);
 			 }
-			 SetTwo(c,(char *)t);
-			 c+=2;
+			 SetPtrArg(c,(char *)t);
+			 c+=4;
 			 break;
 		case 'I':switch(LoadShort(file))
 			 {
@@ -942,8 +953,8 @@ register short *c;
 				case 9:i=(ITEM *)9;break;
 				default:i=LoadItem(file);
 			 }
-			 SetTwo(c,(char *)i);
-			 c+=2;
+			 SetPtrArg(c,(char *)i);
+			 c+=4;
 			 break;
 		case 'B':;
 		case 'C':;

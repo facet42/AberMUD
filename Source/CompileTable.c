@@ -97,6 +97,19 @@ int n;
 	return(0);
 }
 
+/* Packs a pointer into four consecutive words via WriteDb, high word
+ * first -- the encode side of PairArg() (defined further down this
+ * file; see its comment for why four words rather than two). */
+static int WriteDbPtr(void *p)
+{
+	uintptr_t v = (uintptr_t)p;
+	if (WriteDb((unsigned short)(v >> 48)) == -1) return (-1);
+	if (WriteDb((unsigned short)(v >> 32)) == -1) return (-1);
+	if (WriteDb((unsigned short)(v >> 16)) == -1) return (-1);
+	if (WriteDb((unsigned short)(v)) == -1) return (-1);
+	return (0);
+}
+
 static int EncodeFlag(i)
 ITEM *i;
 {
@@ -495,15 +508,7 @@ ITEM *i;
 	if(RememberToLockItem(x))
 		return(-1);	/* Lock the reference */
 
-	//l1:	if (WriteDb((unsigned short)(((unsigned int)(x)) / 65536L)) == -1)
-	l1 : if (WriteDb((unsigned short)(((uintptr_t)(x)) / 65536L)) == -1)
-	{
-		SendItem(i,"Line Too Complex.\n");
-		return(-1);
-	}
-
-	//if(WriteDb((unsigned short)(((unsigned int)(x))%65536L))==-1)
-	if(WriteDb((unsigned short)(((uintptr_t)(x))%65536L))==-1)
+	l1 : if (WriteDbPtr(x) == -1)
 	{
 		SendItem(i,"Line Too Complex.\n");
 		return(-1);
@@ -547,15 +552,7 @@ int n;
 		}
 	}
 
-	//if(WriteDb((unsigned short)(((unsigned int)(a))/65536L))==-1)
-	if(WriteDb((unsigned short)(((uintptr_t)(a))/65536L))==-1)
-	{
-		SendItem(i,"Line Too Complex.\n");
-		return(-1);
-	}
-
-	//if(WriteDb((unsigned short)(((unsigned int)(a))%65536L))==-1)
-	if (WriteDb((unsigned short)(((uintptr_t)(a)) % 65536L)) == -1)
+	if (WriteDbPtr(a) == -1)
 	{
 		SendItem(i,"Line Too Complex.\n");
 		return(-1);
@@ -700,7 +697,6 @@ l2:		LineBuffer[511]=0;
 static void DiscItem(dp)
 unsigned short *dp;
 {
-//	extern uint64_t PairArg();
 	ITEM *a = (ITEM *)PairArg(dp);
 	if((a!=(ITEM *)1)&&(a!=(ITEM *)3)&&(a!=(ITEM *)5)
 			 &&(a!=(ITEM *)7)&&(a!=(ITEM *)9))
@@ -709,7 +705,7 @@ unsigned short *dp;
 
 static void DiscText(unsigned short* dp, int n)
 {
-	TPTR a = (TPTR)((uintptr_t)*dp * 65536L + ((uintptr_t)*(dp + 1)));
+	TPTR a = (TPTR)PairArg(dp);
 	if(a==(TPTR )1)
 		return;
 	if(a==(TPTR )3)
@@ -750,13 +746,13 @@ LINE *l;
 				case 'v':dp++;break;
 				case 't':dp++;break;
 				case 'I':DiscItem(dp);
-					 dp+=2;
+					 dp+=4;
 					 break;
 				case 'T':DiscText(dp,0);
-					dp+=2;
+					dp+=4;
 					break;
 				case '$':DiscText(dp,1);
-					dp+=2;
+					dp+=4;
 					break;
 				default:
 					Error("Cnd_Table: Invalid Entry");
@@ -796,10 +792,28 @@ TABLE *t;
 	free((char *)t);
 }
 
-//unsigned long PairArg(x)
+/*
+ *	PairArg() and WriteDbPtr() (in CompileTable.c, see above) pack and
+ *	unpack a pointer (ITEM or TPTR) into four consecutive unsigned
+ *	shorts in a compiled line, high word first. This is a purely
+ *	in-process, transient encoding: it lets a live table reference an
+ *	in-memory item or text by identity for as long as the table stays
+ *	loaded (see EncodeItem/EncodeText). It is NOT the on-disk save
+ *	format -- SaveAction/LoadAction (SaveLoad.c) convert to and from a
+ *	proper portable index/text representation at the disk boundary, so
+ *	old .uni files are unaffected by this.
+ *
+ *	Was previously packed into just two words (32 bits total), which
+ *	silently truncated any pointer above four gigabytes: routine on a
+ *	64-bit build. Four words covers a full 64-bit pointer on every
+ *	platform; the two high words are simply always zero when built
+ *	32-bit, so the encoding stays portable between 32-bit and 64-bit
+ *	builds either way.
+ */
 uintptr_t PairArg(unsigned short* x)
 {
-	return((*x) << 16 | x[1]);
+	return ((uintptr_t)x[0] << 48) | ((uintptr_t)x[1] << 32)
+		| ((uintptr_t)x[2] << 16) | (uintptr_t)x[3];
 }
 
 char *NumText(n)
@@ -847,7 +861,7 @@ char *buffer;
 			{
 				case 'I':
 					i=(ITEM *)PairArg(x);
-					x+=2;
+					x+=4;
 					switch((int64_t)i)
 					{
 						case 1:strcat(buffer,"$1");
@@ -878,7 +892,7 @@ char *buffer;
 					break;
 				case '$':;
 				case 'T':t=(TPTR )PairArg(x);
-					 x+=2;
+					 x+=4;
 					 if(t==(TPTR )1)
 						strcat(buffer,"{$}");
 					 else

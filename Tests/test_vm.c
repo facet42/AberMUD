@@ -21,13 +21,13 @@
 extern ITEM *Item1, *Item2;
 extern int Noun1, Adj1, Noun2, Adj2, Prep;
 
-/* ArgItem()'s sentinel values (TableDriver.c:194-213): a pair-packed
- * pointer that decodes to exactly 1/3/5/7/9 is substituted for $1/$2/$ME/
- * $AC/$RM instead of being used as a literal address. Two ushorts each,
- * high word first (PairArg: (*x)<<16 | x[1]) -- since these values are
- * tiny, the high word is always 0. */
-#define ARG1	0, 1
-#define ARG2	0, 3
+/* ArgItem()'s sentinel values (TableDriver.c:194-213): a pointer packed
+ * across four ushorts (high word first, see PairArg() in
+ * CompileTable.c) that decodes to exactly 1/3/5/7/9 is substituted for
+ * $1/$2/$ME/$AC/$RM instead of being used as a literal address. Since
+ * these sentinel values are tiny, the three high words are always 0. */
+#define ARG1	0, 0, 0, 1
+#define ARG2	0, 0, 0, 3
 
 #define OP(name) (unsigned short)FindCnd(name)
 
@@ -113,6 +113,46 @@ static void attach_container(ITEM *item, CONTAINER *c, short volume, short flags
 	c->co_Volume = volume;
 	c->co_Flags = flags;
 	item->it_Properties = (SUB *)c;
+}
+
+/* Encodes a literal (non-sentinel) pointer into four words the same way
+ * EncodeItem()/EncodeText() (CompileTable.c) do for a table-bound item
+ * or text reference, rather than going through the $1/$2/$ME sentinel
+ * shortcut the ARG1/ARG2 macros use. */
+static void encode_ptr(unsigned short *dst, void *p)
+{
+	uintptr_t v = (uintptr_t)p;
+	dst[0] = (unsigned short)(v >> 48);
+	dst[1] = (unsigned short)(v >> 32);
+	dst[2] = (unsigned short)(v >> 16);
+	dst[3] = (unsigned short)(v);
+}
+
+/* Regression test for the pointer-packing fix itself: PairArg() used to
+ * reconstruct only the low 32 bits of a packed pointer, which silently
+ * corrupted any address above 4GB -- routine on a 64-bit build, where a
+ * plain stack address like &room below regularly has bits set above
+ * bit 32. This encodes a real, non-sentinel ITEM* the way the table
+ * compiler would and confirms the VM decodes the exact same address
+ * back out, not a truncated one. */
+static void test_pairarg_roundtrips_pointer_above_32_bits(void)
+{
+	ITEM room, elsewhere, player;
+	unsigned short code[9];
+	reset_item(&room); reset_item(&elsewhere); reset_item(&player);
+	player.it_Parent = &room;
+	SetMe(&player);
+
+	code[0] = OP("AT");
+	encode_ptr(&code[1], &room);
+	code[5] = OP("LET");
+	code[6] = MARK;
+	code[7] = 1;
+	code[8] = CMD_EOL;
+	TEST_CHECK(CodeSucceeds(code));
+
+	encode_ptr(&code[1], &elsewhere);
+	TEST_CHECK(!CodeSucceeds(code));
 }
 
 /* ---- item-relationship conditions ---- */
@@ -918,6 +958,7 @@ static void test_line_stops_at_failed_condition(void)
 int main(int argc, char *argv[])
 {
 	(void)argc; (void)argv;
+	RUN_TEST(test_pairarg_roundtrips_pointer_above_32_bits);
 	RUN_TEST(test_cnd_at_and_notat);
 	RUN_TEST(test_cnd_present_and_absent);
 	RUN_TEST(test_cnd_carried_and_notcarr);

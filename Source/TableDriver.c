@@ -192,7 +192,7 @@ int ArgWord()		/* Read word from line */
 ITEM *ArgItem()		/* Read item from line */
 {
 	ITEM *x=(ITEM *)PairArg(DataPointer);
-	DataPointer+=2;
+	DataPointer+=4;
 	if(x==(ITEM *)1)
 		x=Item1;	/* $1 */
 	if(x==(ITEM *)3)	/* $2 */
@@ -216,7 +216,7 @@ ITEM *ArgItem()		/* Read item from line */
 TPTR ArgText()		/* Read a text argument */
 {
 	TPTR x=(TPTR)PairArg(DataPointer);
-	DataPointer+=2;
+	DataPointer+=4;
 	if(x==(TPTR )1)
 	{
 		x=TxtArg;		/* {$} */

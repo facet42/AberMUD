@@ -27,14 +27,18 @@ short post_boot = 1;
 
 /* ---- faithful copies of small, self-contained real implementations ---- */
 
-/* Verbatim from CompileTable.c: reconstructs a pointer packed as two
- * 16-bit words. Needed for real (not just no-op) because ArgItem()'s
- * $1/$2/$ME/$AC/$RM sentinel values (1/3/5/7/9) are decoded through this
- * exact function -- a stub that always returns 0 would break every
- * sentinel-based item reference our tests rely on. */
+/* Verbatim from CompileTable.c: reconstructs a pointer packed as four
+ * 16-bit words, high word first (widened from two words/32 bits, which
+ * silently truncated any pointer above 4GB on a 64-bit build -- see the
+ * comment on the real PairArg() in CompileTable.c). Needed for real
+ * (not just no-op) because ArgItem()'s $1/$2/$ME/$AC/$RM sentinel
+ * values (1/3/5/7/9) are decoded through this exact function -- a stub
+ * that always returns 0 would break every sentinel-based item
+ * reference our tests rely on. */
 uintptr_t PairArg(unsigned short *x)
 {
-	return ((*x) << 16 | x[1]);
+	return ((uintptr_t)x[0] << 48) | ((uintptr_t)x[1] << 32)
+		| ((uintptr_t)x[2] << 16) | (uintptr_t)x[3];
 }
 
 /* Verbatim from System.c (minus the CHECK_ITEM debug hook, which is

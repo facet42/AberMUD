@@ -49,16 +49,16 @@ int st;
 			{
 				case 'I':
 					i=(ITEM *)PairArg(x);
-					x+=2;
+					x+=4;
 					if(s&&i==s)
 					{
-						PrintLine(line);	
+						PrintLine(line);
 						return;
 					}
 					break;
 				case '$':;
 				case 'T':t=(TPTR )PairArg(x);
-					 x+=2;
+					 x+=4;
 					 break;
 				case '3':x++;break;
 				case 'F':if(*x++==st)
