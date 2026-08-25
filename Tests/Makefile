@@ -10,7 +10,7 @@
 SRC     = ../Source
 CC      = gcc -Wall -pedantic -I$(SRC)
 
-BINS    = test_ansibits test_parser test_flagname test_vm test_saveload
+BINS    = test_ansibits test_parser test_flagname test_vm test_saveload test_compile
 
 check: $(BINS)
 	@status=0; \
@@ -37,6 +37,9 @@ test_vm: test_vm.c $(SRC)/CondCode.c $(SRC)/ActionCode.c $(SRC)/TableDriver.c vm
 # would define everything twice.
 test_saveload: test_saveload.c $(SRC)/SaveLoad.c saveload_stubs.c test_framework.h
 	$(CC) test_saveload.c saveload_stubs.c -o $@
+
+test_compile: test_compile.c $(SRC)/CompileTable.c $(SRC)/Parser.c $(SRC)/CondCode.c $(SRC)/ActionCode.c $(SRC)/TableDriver.c $(SRC)/FlagName.c compile_stubs.c test_framework.h
+	$(CC) test_compile.c $(SRC)/CompileTable.c $(SRC)/Parser.c $(SRC)/CondCode.c $(SRC)/ActionCode.c $(SRC)/TableDriver.c $(SRC)/FlagName.c $(SRC)/AnsiBits.c compile_stubs.c -o $@
 
 clean:
 	rm -f $(BINS)
