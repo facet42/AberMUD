@@ -10,7 +10,7 @@
 SRC     = ../Source
 CC      = gcc -Wall -pedantic -I$(SRC)
 
-BINS    = test_ansibits test_parser test_flagname test_vm test_saveload test_compile
+BINS    = test_ansibits test_parser test_flagname test_vm test_saveload test_compile test_integration
 
 check: $(BINS)
 	@status=0; \
@@ -40,6 +40,9 @@ test_saveload: test_saveload.c $(SRC)/SaveLoad.c saveload_stubs.c test_framework
 
 test_compile: test_compile.c $(SRC)/CompileTable.c $(SRC)/Parser.c $(SRC)/CondCode.c $(SRC)/ActionCode.c $(SRC)/TableDriver.c $(SRC)/FlagName.c compile_stubs.c test_framework.h
 	$(CC) test_compile.c $(SRC)/CompileTable.c $(SRC)/Parser.c $(SRC)/CondCode.c $(SRC)/ActionCode.c $(SRC)/TableDriver.c $(SRC)/FlagName.c $(SRC)/AnsiBits.c compile_stubs.c -o $@
+
+test_integration: test_integration.c $(SRC)/CompileTable.c $(SRC)/Parser.c $(SRC)/CondCode.c $(SRC)/ActionCode.c $(SRC)/TableDriver.c $(SRC)/FlagName.c integration_stubs.c test_framework.h
+	$(CC) test_integration.c $(SRC)/CompileTable.c $(SRC)/Parser.c $(SRC)/CondCode.c $(SRC)/ActionCode.c $(SRC)/TableDriver.c $(SRC)/FlagName.c $(SRC)/AnsiBits.c integration_stubs.c -o $@
 
 clean:
 	rm -f $(BINS)

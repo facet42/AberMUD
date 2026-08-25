@@ -4,3 +4,4 @@ test_flagname
 test_vm
 test_saveload
 test_compile
+test_integration
